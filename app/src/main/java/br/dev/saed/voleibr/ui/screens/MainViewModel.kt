@@ -10,20 +10,21 @@ data class MainScreenState(
     var maxPoints: Int = 12,
     var team1: Team = Team("Time 1"),
     var team2: Team = Team("Time 2"),
-    val teamsInQueue: ArrayDeque<Team> = ArrayDeque(),
-    val vaiA2: Boolean = true
+    val teamsInQueue: ArrayDeque<Team> = arrayOf(Team("Time 3"), Team("Time 4")).toCollection(
+        ArrayDeque()
+    ),
+    val vaiA2: Boolean = true,
+    val teamToAdd: Team = Team()
 ) {
     fun pontos() {
     }
 
     fun pontuarTime1() {
         team1.pontos++
-        testarGanhador()
     }
 
     fun pontuarTime2() {
         team2.pontos++
-        testarGanhador()
     }
 
     fun adicionarTime(team: Team) {
@@ -77,13 +78,17 @@ data class MainScreenState(
 }
 
 sealed class MainScreenEvent {
-    object Team1Scored : MainScreenEvent()
-    object Team2Scored : MainScreenEvent()
-    object SwitchClicked : MainScreenEvent()
-    data class onMaxPointsChanged(val maxPoints: Int) : MainScreenEvent()
-    data class onTeam1NameChanged(val name: String) : MainScreenEvent()
-    data class onTeam2NameChanged(val name: String) : MainScreenEvent()
-    data class onAddTeamToQueue(val team: Team) : MainScreenEvent()
+    data object Team1Scored : MainScreenEvent()
+    data object Team2Scored : MainScreenEvent()
+    data object DecreaseMaxPoints : MainScreenEvent()
+    data object IncreaseMaxPoints : MainScreenEvent()
+    data object SwitchClicked : MainScreenEvent()
+    data object ClickedAddTeam : MainScreenEvent()
+    data object ResetPoints : MainScreenEvent()
+    data class OnMaxPointsChanged(val maxPoints: Int) : MainScreenEvent()
+    data class OnTeam1NameChanged(val name: String) : MainScreenEvent()
+    data class OnTeam2NameChanged(val name: String) : MainScreenEvent()
+    data class OnAddTeamNameChanged(val team: String) : MainScreenEvent()
 }
 
 class MainViewModel : ViewModel() {
@@ -94,34 +99,54 @@ class MainViewModel : ViewModel() {
 
     fun onEvent(event: MainScreenEvent) {
         when (event) {
-            is MainScreenEvent.Team1Scored -> _uiState.update {
+            is MainScreenEvent.Team1Scored -> {
+                _uiState.update {
+                    it.copy(team1 = it.team1.copy(pontos = it.team1.pontos + 1))
+                }
                 testWinner()
-                it.copy(team1 = it.team1.copy(pontos = it.team1.pontos + 1))
             }
 
-            is MainScreenEvent.Team2Scored -> _uiState.update {
+            is MainScreenEvent.Team2Scored -> {
+                _uiState.update {
+                    it.copy(team2 = it.team2.copy(pontos = it.team2.pontos + 1))
+                }
                 testWinner()
-                it.copy(team2 = it.team2.copy(pontos = it.team2.pontos + 1))
+            }
+
+            is MainScreenEvent.DecreaseMaxPoints -> _uiState.update {
+                it.copy(maxPoints = it.maxPoints - 1)
+            }
+
+            is MainScreenEvent.IncreaseMaxPoints -> _uiState.update {
+                it.copy(maxPoints = it.maxPoints + 1)
             }
 
             is MainScreenEvent.SwitchClicked -> _uiState.update {
                 it.copy(vaiA2 = !it.vaiA2)
             }
 
-            is MainScreenEvent.onMaxPointsChanged -> _uiState.update {
+            is MainScreenEvent.ClickedAddTeam -> _uiState.update {
+                it.copy(teamsInQueue = it.teamsInQueue.apply { add(it.teamToAdd) })
+            }
+
+            is MainScreenEvent.ResetPoints -> _uiState.update {
+                it.copy(team1 = it.team1.copy(pontos = 0), team2 = it.team2.copy(pontos = 0))
+            }
+
+            is MainScreenEvent.OnMaxPointsChanged -> _uiState.update {
                 it.copy(maxPoints = event.maxPoints)
             }
 
-            is MainScreenEvent.onTeam1NameChanged -> _uiState.update {
+            is MainScreenEvent.OnTeam1NameChanged -> _uiState.update {
                 it.copy(team1 = it.team1.copy(nome = event.name))
             }
 
-            is MainScreenEvent.onTeam2NameChanged -> _uiState.update {
+            is MainScreenEvent.OnTeam2NameChanged -> _uiState.update {
                 it.copy(team2 = it.team2.copy(nome = event.name))
             }
 
-            is MainScreenEvent.onAddTeamToQueue -> _uiState.update {
-                it.copy(teamsInQueue = it.teamsInQueue.apply { add(event.team) })
+            is MainScreenEvent.OnAddTeamNameChanged -> _uiState.update {
+                it.copy(teamToAdd = it.teamToAdd.copy(nome = event.team))
             }
         }
     }
@@ -130,8 +155,8 @@ class MainViewModel : ViewModel() {
         _uiState.value.testarGanhador()?.let {
             _uiState.update { state ->
                 state.copy(
-                    team1 = state.team1,
-                    team2 = state.team2
+                    team1 = state.team1.copy(),
+                    team2 = state.team2.copy()
                 )
             }
         }

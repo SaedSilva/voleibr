@@ -35,7 +35,8 @@ private fun App(modifier: Modifier = Modifier) {
     val viewModel = MainViewModel()
     
     MainScreen(
-        viewModel = viewModel
+        viewModel = viewModel,
+        modifier = modifier
     )
 }
 
