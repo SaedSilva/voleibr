@@ -35,9 +35,16 @@ import br.dev.saed.voleibr.ui.theme.VoleibrTheme
 @Composable
 fun MainScreen(
     modifier: Modifier = Modifier,
-    viewModel: MainViewModel
+    uiState: MainScreenState,
+    onClickDecreaseMaxPoints: () -> Unit = {},
+    onClickIncreaseMaxPoints: () -> Unit = {},
+    onClickTeam1Scored: () -> Unit = {},
+    onClickTeam2Scored: () -> Unit = {},
+    onClickSwitchVaiA2: () -> Unit = {},
+    onAddTeamNameChanged: (String) -> Unit = {},
+    onClickAddTeam: () -> Unit = {},
+    onClickResetPoints: () -> Unit = {}
 ) {
-    val uiState by viewModel.uiState.collectAsState()
 
     Column(
         modifier = modifier
@@ -51,7 +58,7 @@ fun MainScreen(
             horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Button(onClick = { viewModel.onEvent(MainScreenEvent.DecreaseMaxPoints) }) {
+            Button(onClick = { onClickDecreaseMaxPoints() }) {
                 Icon(
                     painter = painterResource(id = R.drawable.baseline_remove_24),
                     contentDescription = null
@@ -74,7 +81,7 @@ fun MainScreen(
                 )
             }
 
-            Button(onClick = { viewModel.onEvent(MainScreenEvent.IncreaseMaxPoints) }) {
+            Button(onClick = { onClickIncreaseMaxPoints() }) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = null)
             }
         }
@@ -92,7 +99,7 @@ fun MainScreen(
             ) {
                 Text(text = uiState.team1.nome, fontSize = 24.sp)
                 Text(text = uiState.team1.pontos.toString(), fontSize = 32.sp)
-                Button(onClick = { viewModel.onEvent(MainScreenEvent.Team1Scored) }) {
+                Button(onClick = { onClickTeam1Scored() }) {
                     Text(text = stringResource(id = R.string.txt_score))
                 }
             }
@@ -102,7 +109,7 @@ fun MainScreen(
             ) {
                 Text(text = uiState.team2.nome, fontSize = 24.sp)
                 Text(text = uiState.team2.pontos.toString(), fontSize = 32.sp)
-                Button(onClick = { viewModel.onEvent(MainScreenEvent.Team2Scored) }) {
+                Button(onClick = { onClickTeam2Scored() }) {
                     Text(text = stringResource(id = R.string.txt_score))
                 }
             }
@@ -116,7 +123,7 @@ fun MainScreen(
             Switch(
                 checked = uiState.vaiA2,
                 onCheckedChange = {
-                    viewModel.onEvent(MainScreenEvent.SwitchClicked)
+                    onClickSwitchVaiA2()
                 }
             )
             Text(text = stringResource(id = R.string.txt_vai_a_2), modifier = Modifier.padding(start = 8.dp))
@@ -144,15 +151,15 @@ fun MainScreen(
             TextField(
                 value = uiState.teamToAdd.nome,
                 onValueChange = {
-                    viewModel.onEvent(MainScreenEvent.OnAddTeamNameChanged(it))
+                    onAddTeamNameChanged(it)
                 },
                 singleLine = true,
                 label = { Text(text = stringResource(id = R.string.edit_team_name)) }
             )
             Button(
                 onClick = {
-                    viewModel.onEvent(MainScreenEvent.ClickedAddTeam)
-                    viewModel.onEvent(MainScreenEvent.OnAddTeamNameChanged(""))
+                    onClickAddTeam()
+                    onAddTeamNameChanged("")
                 }
             ) {
                 Icon(imageVector = Icons.AutoMirrored.Filled.Send, contentDescription = null)
@@ -161,7 +168,7 @@ fun MainScreen(
 
         Button(
             onClick = {
-                viewModel.onEvent(MainScreenEvent.ResetPoints)
+                onClickResetPoints()
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -176,6 +183,8 @@ fun MainScreen(
 @Composable
 private fun MainScreenPreview() {
     VoleibrTheme {
-        MainScreen(viewModel = MainViewModel(DataStoreHelper(LocalContext.current)))
+        MainScreen(
+            uiState = MainScreenState()
+        )
     }
 }

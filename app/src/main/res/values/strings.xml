@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Volei BR</string>
+    <string name="app_name">Marcador Volei BR</string>
     <string name="txt_max_points">Max Pontos:</string>
     <string name="txt_score">Pontuar</string>
     <string name="txt_vai_a_2">Vai a 2?</string>
