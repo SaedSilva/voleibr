@@ -33,11 +33,12 @@ class MainActivity : ComponentActivity() {
 @Composable
 private fun App(modifier: Modifier = Modifier) {
     val viewModel = MainViewModel(DataStoreHelper(LocalContext.current))
-    
-    MainScreen(
-        viewModel = viewModel,
-        modifier = modifier
-    )
+    VoleibrTheme {
+        MainScreen(
+            viewModel = viewModel,
+            modifier = modifier
+        )
+    }
 }
 
 @Preview

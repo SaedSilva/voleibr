@@ -107,14 +107,16 @@ class MainViewModel(
         viewModelScope.launch {
             val maxPoints = dataStoreHelper.maxPointsFlow.first()
             val team1 = dataStoreHelper.team1Flow.first()
+            val pointTeam1 = dataStoreHelper.team1PointsFlow.first()
             val team2 = dataStoreHelper.team2Flow.first()
+            val pointTeam2 = dataStoreHelper.team2PointsFlow.first()
             val vaiA2 = dataStoreHelper.vaiA2Flow.first()
 
             _uiState.update {
                 it.copy(
                     maxPoints = maxPoints,
-                    team1 = Team(team1),
-                    team2 = Team(team2),
+                    team1 = Team(team1, pointTeam1),
+                    team2 = Team(team2, pointTeam2),
                     vaiA2 = vaiA2
                 )
             }
@@ -128,6 +130,9 @@ class MainViewModel(
                     it.copy(team1 = it.team1.copy(pontos = it.team1.pontos + 1))
                 }
                 testWinner()
+                viewModelScope.launch {
+                    dataStoreHelper.savePointsTeam1(_uiState.value.team1.pontos)
+                }
             }
 
             is MainScreenEvent.Team2Scored -> {
@@ -135,6 +140,9 @@ class MainViewModel(
                     it.copy(team2 = it.team2.copy(pontos = it.team2.pontos + 1))
                 }
                 testWinner()
+                viewModelScope.launch {
+                    dataStoreHelper.savePointsTeam2(_uiState.value.team2.pontos)
+                }
             }
 
             is MainScreenEvent.DecreaseMaxPoints -> {
@@ -168,8 +176,14 @@ class MainViewModel(
                 it.copy(teamsInQueue = it.teamsInQueue.apply { add(it.teamToAdd) })
             }
 
-            is MainScreenEvent.ResetPoints -> _uiState.update {
-                it.copy(team1 = it.team1.copy(pontos = 0), team2 = it.team2.copy(pontos = 0))
+            is MainScreenEvent.ResetPoints -> {
+                _uiState.update {
+                    it.copy(team1 = it.team1.copy(pontos = 0), team2 = it.team2.copy(pontos = 0))
+                }
+                viewModelScope.launch {
+                    dataStoreHelper.savePointsTeam1(0)
+                    dataStoreHelper.savePointsTeam2(0)
+                }
             }
 
             is MainScreenEvent.OnMaxPointsChanged -> _uiState.update {
