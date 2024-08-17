@@ -10,7 +10,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import br.dev.saed.voleibr.model.DataStoreHelper
 import br.dev.saed.voleibr.ui.screens.MainScreen
 import br.dev.saed.voleibr.ui.screens.MainScreenEvent
 import br.dev.saed.voleibr.ui.screens.MainViewModel
@@ -32,7 +34,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 private fun App(modifier: Modifier = Modifier) {
-    val viewModel = MainViewModel()
+    val viewModel = MainViewModel(DataStoreHelper(LocalContext.current))
     
     MainScreen(
         viewModel = viewModel,

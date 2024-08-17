@@ -22,14 +22,19 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.datastore.preferences.core.Preferences
 import br.dev.saed.voleibr.R
+import br.dev.saed.voleibr.model.DataStoreHelper
+import br.dev.saed.voleibr.model.dataStore
 import br.dev.saed.voleibr.ui.theme.VoleibrTheme
+import kotlinx.coroutines.flow.map
 
 @Composable
 fun MainScreen(
@@ -37,6 +42,8 @@ fun MainScreen(
     viewModel: MainViewModel
 ) {
     val uiState by viewModel.uiState.collectAsState()
+
+
 
     Column(
         modifier = modifier
@@ -175,6 +182,6 @@ fun MainScreen(
 @Composable
 private fun MainScreenPreview() {
     VoleibrTheme {
-        MainScreen(viewModel = MainViewModel())
+        MainScreen(viewModel = MainViewModel(DataStoreHelper(LocalContext.current)))
     }
 }

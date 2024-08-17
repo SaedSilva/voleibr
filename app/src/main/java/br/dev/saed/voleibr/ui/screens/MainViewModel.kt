@@ -1,10 +1,14 @@
 package br.dev.saed.voleibr.ui.screens
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import br.dev.saed.voleibr.model.DataStoreHelper
 import br.dev.saed.voleibr.model.Team
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 data class MainScreenState(
     var maxPoints: Int = 12,
@@ -91,11 +95,31 @@ sealed class MainScreenEvent {
     data class OnAddTeamNameChanged(val team: String) : MainScreenEvent()
 }
 
-class MainViewModel : ViewModel() {
+class MainViewModel(
+    private val dataStoreHelper: DataStoreHelper
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MainScreenState())
 
     val uiState = _uiState.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            val maxPoints = dataStoreHelper.maxPointsFlow.first()
+            val team1 = dataStoreHelper.team1Flow.first()
+            val team2 = dataStoreHelper.team2Flow.first()
+            val vaiA2 = dataStoreHelper.vaiA2Flow.first()
+
+            _uiState.update {
+                it.copy(
+                    maxPoints = maxPoints,
+                    team1 = Team(team1),
+                    team2 = Team(team2),
+                    vaiA2 = vaiA2
+                )
+            }
+        }
+    }
 
     fun onEvent(event: MainScreenEvent) {
         when (event) {
@@ -113,16 +137,31 @@ class MainViewModel : ViewModel() {
                 testWinner()
             }
 
-            is MainScreenEvent.DecreaseMaxPoints -> _uiState.update {
-                it.copy(maxPoints = it.maxPoints - 1)
+            is MainScreenEvent.DecreaseMaxPoints -> {
+                _uiState.update {
+                    it.copy(maxPoints = it.maxPoints - 1)
+                }
+                viewModelScope.launch {
+                    dataStoreHelper.saveMaxPoints(_uiState.value.maxPoints)
+                }
             }
 
-            is MainScreenEvent.IncreaseMaxPoints -> _uiState.update {
-                it.copy(maxPoints = it.maxPoints + 1)
+            is MainScreenEvent.IncreaseMaxPoints -> {
+                _uiState.update {
+                    it.copy(maxPoints = it.maxPoints + 1)
+                }
+                viewModelScope.launch {
+                    dataStoreHelper.saveMaxPoints(_uiState.value.maxPoints)
+                }
             }
 
-            is MainScreenEvent.SwitchClicked -> _uiState.update {
-                it.copy(vaiA2 = !it.vaiA2)
+            is MainScreenEvent.SwitchClicked -> {
+                _uiState.update {
+                    it.copy(vaiA2 = !it.vaiA2)
+                }
+                viewModelScope.launch {
+                    dataStoreHelper.saveVaiA2(_uiState.value.vaiA2)
+                }
             }
 
             is MainScreenEvent.ClickedAddTeam -> _uiState.update {
@@ -158,6 +197,10 @@ class MainViewModel : ViewModel() {
                     team1 = state.team1.copy(),
                     team2 = state.team2.copy()
                 )
+            }
+            viewModelScope.launch {
+                dataStoreHelper.saveTeam1(_uiState.value.team1.nome)
+                dataStoreHelper.saveTeam2(_uiState.value.team2.nome)
             }
         }
     }
