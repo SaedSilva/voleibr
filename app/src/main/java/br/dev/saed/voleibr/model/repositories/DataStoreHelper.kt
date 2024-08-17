@@ -1,4 +1,4 @@
-package br.dev.saed.voleibr.model
+package br.dev.saed.voleibr.model.repositories
 
 import android.content.Context
 import androidx.datastore.core.DataStore
@@ -60,5 +60,6 @@ class DataStoreHelper(private val context: Context) {
             preferences[VAI_A_2] = vaiA2
         }
     }
-
 }
+
+

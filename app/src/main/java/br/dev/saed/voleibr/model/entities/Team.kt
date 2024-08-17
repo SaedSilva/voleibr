@@ -1,4 +1,4 @@
-package br.dev.saed.voleibr.model
+package br.dev.saed.voleibr.model.entities
 
 data class Team(
     var nome: String = "",

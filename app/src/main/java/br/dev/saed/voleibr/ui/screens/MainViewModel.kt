@@ -2,8 +2,8 @@ package br.dev.saed.voleibr.ui.screens
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import br.dev.saed.voleibr.model.DataStoreHelper
-import br.dev.saed.voleibr.model.Team
+import br.dev.saed.voleibr.model.repositories.DataStoreHelper
+import br.dev.saed.voleibr.model.entities.Team
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
@@ -198,10 +198,10 @@ class MainViewModel(
                     team2 = state.team2.copy()
                 )
             }
-            viewModelScope.launch {
-                dataStoreHelper.saveTeam1(_uiState.value.team1.nome)
-                dataStoreHelper.saveTeam2(_uiState.value.team2.nome)
-            }
+        }
+        viewModelScope.launch {
+            dataStoreHelper.saveTeam1(_uiState.value.team1.nome)
+            dataStoreHelper.saveTeam2(_uiState.value.team2.nome)
         }
     }
 }

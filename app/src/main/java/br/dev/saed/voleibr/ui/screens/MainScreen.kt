@@ -10,7 +10,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
-import androidx.compose.material3.Divider
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -24,17 +23,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
-import androidx.datastore.preferences.core.Preferences
 import br.dev.saed.voleibr.R
-import br.dev.saed.voleibr.model.DataStoreHelper
-import br.dev.saed.voleibr.model.dataStore
+import br.dev.saed.voleibr.model.repositories.DataStoreHelper
 import br.dev.saed.voleibr.ui.theme.VoleibrTheme
-import kotlinx.coroutines.flow.map
 
 @Composable
 fun MainScreen(
@@ -42,8 +38,6 @@ fun MainScreen(
     viewModel: MainViewModel
 ) {
     val uiState by viewModel.uiState.collectAsState()
-
-
 
     Column(
         modifier = modifier
@@ -70,7 +64,7 @@ fun MainScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Max Pontos:",
+                    text = stringResource(id = R.string.txt_max_points),
                     style = MaterialTheme.typography.titleSmall,
                     fontSize = 32.sp
                 )
@@ -99,7 +93,7 @@ fun MainScreen(
                 Text(text = uiState.team1.nome, fontSize = 24.sp)
                 Text(text = uiState.team1.pontos.toString(), fontSize = 32.sp)
                 Button(onClick = { viewModel.onEvent(MainScreenEvent.Team1Scored) }) {
-                    Text(text = "Pontuar")
+                    Text(text = stringResource(id = R.string.txt_score))
                 }
             }
 
@@ -109,7 +103,7 @@ fun MainScreen(
                 Text(text = uiState.team2.nome, fontSize = 24.sp)
                 Text(text = uiState.team2.pontos.toString(), fontSize = 32.sp)
                 Button(onClick = { viewModel.onEvent(MainScreenEvent.Team2Scored) }) {
-                    Text(text = "Pontuar")
+                    Text(text = stringResource(id = R.string.txt_score))
                 }
             }
         }
@@ -125,17 +119,17 @@ fun MainScreen(
                     viewModel.onEvent(MainScreenEvent.SwitchClicked)
                 }
             )
-            Text(text = "Vai a 2", modifier = Modifier.padding(start = 8.dp))
+            Text(text = stringResource(id = R.string.txt_vai_a_2), modifier = Modifier.padding(start = 8.dp))
         }
 
-        Text(text = "Times na fila:")
+        Text(text = stringResource(id = R.string.txt_teams_in_queue), fontSize = 24.sp)
         HorizontalDivider()
-        for (team in uiState.teamsInQueue) {
+        uiState.teamsInQueue.forEachIndexed { index, team ->
             Text(
-                text = team.nome,
-                fontSize = 24.sp,
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center
+                text = "${index + 1} - ${team.nome}",
+                textAlign = TextAlign.Center,
+                fontSize = 28.sp,
+                modifier = Modifier.fillMaxWidth()
             )
             HorizontalDivider()
         }
@@ -153,7 +147,7 @@ fun MainScreen(
                     viewModel.onEvent(MainScreenEvent.OnAddTeamNameChanged(it))
                 },
                 singleLine = true,
-                label = { Text(text = "Nome do time") }
+                label = { Text(text = stringResource(id = R.string.edit_team_name)) }
             )
             Button(
                 onClick = {
@@ -173,7 +167,7 @@ fun MainScreen(
                 .fillMaxWidth()
                 .padding(top = 16.dp)
         ) {
-            Text(text = "Reiniciar")
+            Text(text = stringResource(id = R.string.btn_reset_points))
         }
     }
 }

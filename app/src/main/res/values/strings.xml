@@ -1,3 +1,9 @@
 <resources>
-    <string name="app_name">voleibr</string>
+    <string name="app_name">Volei BR</string>
+    <string name="txt_max_points">Max Pontos:</string>
+    <string name="txt_score">Pontuar</string>
+    <string name="txt_vai_a_2">Pontuar</string>
+    <string name="txt_teams_in_queue">Times na fila:</string>
+    <string name="edit_team_name">Nome do time</string>
+    <string name="btn_reset_points">Reiniciar</string>
 </resources>
