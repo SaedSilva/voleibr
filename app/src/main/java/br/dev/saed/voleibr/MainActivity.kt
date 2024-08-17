@@ -18,6 +18,7 @@ import br.dev.saed.voleibr.ui.screens.MainScreen
 import br.dev.saed.voleibr.ui.screens.MainScreenEvent
 import br.dev.saed.voleibr.ui.screens.MainViewModel
 import br.dev.saed.voleibr.ui.theme.VoleibrTheme
+import br.dev.saed.voleibr.utils.vibrator
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,7 +36,8 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 private fun App(modifier: Modifier = Modifier) {
-    val viewModel = MainViewModel(DataStoreHelper(LocalContext.current))
+    val context = LocalContext.current
+    val viewModel = MainViewModel(DataStoreHelper(context))
     val uiState by viewModel.uiState.collectAsState()
     VoleibrTheme {
         MainScreen(
@@ -43,9 +45,16 @@ private fun App(modifier: Modifier = Modifier) {
             uiState = uiState,
             onClickDecreaseMaxPoints = { viewModel.onEvent(MainScreenEvent.DecreaseMaxPoints) },
             onClickIncreaseMaxPoints = { viewModel.onEvent(MainScreenEvent.IncreaseMaxPoints) },
-            onClickTeam1Scored = { viewModel.onEvent(MainScreenEvent.Team1Scored) },
-            onClickTeam2Scored = { viewModel.onEvent(MainScreenEvent.Team2Scored) },
-            onClickSwitchVaiA2 = { viewModel.onEvent(MainScreenEvent.SwitchClicked) },
+            onClickTeam1Scored = {
+                viewModel.onEvent(MainScreenEvent.Team1Scored)
+                context.vibrator(1010)
+            },
+            onClickTeam2Scored = {
+                viewModel.onEvent(MainScreenEvent.Team2Scored)
+                context.vibrator(1010)
+            },
+            onClickSwitchVaiA2 = { viewModel.onEvent(MainScreenEvent.SwitchVaiA2) },
+            onClickSwitchVibrar = { viewModel.onEvent(MainScreenEvent.SwitchVibrar) },
             onAddTeamNameChanged = { viewModel.onEvent(MainScreenEvent.OnAddTeamNameChanged(it)) },
             onClickAddTeam = { viewModel.onEvent(MainScreenEvent.ClickedAddTeam) },
             onClickResetPoints = { viewModel.onEvent(MainScreenEvent.ResetPoints) }

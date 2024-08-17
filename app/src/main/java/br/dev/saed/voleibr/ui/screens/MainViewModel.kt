@@ -18,6 +18,7 @@ data class MainScreenState(
         ArrayDeque()
     ),
     val vaiA2: Boolean = true,
+    val vibrar: Boolean = true,
     val teamToAdd: Team = Team()
 ) {
     fun pontos() {
@@ -86,7 +87,8 @@ sealed class MainScreenEvent {
     data object Team2Scored : MainScreenEvent()
     data object DecreaseMaxPoints : MainScreenEvent()
     data object IncreaseMaxPoints : MainScreenEvent()
-    data object SwitchClicked : MainScreenEvent()
+    data object SwitchVaiA2 : MainScreenEvent()
+    data object SwitchVibrar: MainScreenEvent()
     data object ClickedAddTeam : MainScreenEvent()
     data object ResetPoints : MainScreenEvent()
     data class OnMaxPointsChanged(val maxPoints: Int) : MainScreenEvent()
@@ -111,13 +113,15 @@ class MainViewModel(
             val team2 = dataStoreHelper.team2Flow.first()
             val pointTeam2 = dataStoreHelper.team2PointsFlow.first()
             val vaiA2 = dataStoreHelper.vaiA2Flow.first()
+            val vibrar = dataStoreHelper.vibrarFlow.first()
 
             _uiState.update {
                 it.copy(
                     maxPoints = maxPoints,
                     team1 = Team(team1, pointTeam1),
                     team2 = Team(team2, pointTeam2),
-                    vaiA2 = vaiA2
+                    vaiA2 = vaiA2,
+                    vibrar = vibrar
                 )
             }
         }
@@ -163,12 +167,22 @@ class MainViewModel(
                 }
             }
 
-            is MainScreenEvent.SwitchClicked -> {
+            is MainScreenEvent.SwitchVaiA2 -> {
                 _uiState.update {
                     it.copy(vaiA2 = !it.vaiA2)
                 }
                 viewModelScope.launch {
                     dataStoreHelper.saveVaiA2(_uiState.value.vaiA2)
+                }
+            }
+
+            is MainScreenEvent.SwitchVibrar -> {
+                _uiState.update {
+                    it.copy(vibrar = !it.vibrar)
+                }
+
+                viewModelScope.launch {
+                    dataStoreHelper.saveVibrar(_uiState.value.vibrar)
                 }
             }
 

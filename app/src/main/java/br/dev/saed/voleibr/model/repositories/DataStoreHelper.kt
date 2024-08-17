@@ -21,6 +21,7 @@ class DataStoreHelper(private val context: Context) {
         val TEAM_2 = stringPreferencesKey("team_2")
         val POINTS_TEAM_2 = intPreferencesKey("points_team_2")
         val VAI_A_2 = booleanPreferencesKey("vai_a_2")
+        val VIBRAR = booleanPreferencesKey("vibrar")
     }
 
     val maxPointsFlow: Flow<Int> = context.dataStore.data.map { preferences ->
@@ -45,6 +46,10 @@ class DataStoreHelper(private val context: Context) {
 
     val vaiA2Flow: Flow<Boolean> = context.dataStore.data.map { preferences ->
         preferences[VAI_A_2] ?: true
+    }
+
+    val vibrarFlow: Flow<Boolean> = context.dataStore.data.map { preferences ->
+        preferences[VIBRAR] ?: true
     }
 
     suspend fun saveMaxPoints(maxPoints: Int) {
@@ -80,6 +85,12 @@ class DataStoreHelper(private val context: Context) {
     suspend fun saveVaiA2(vaiA2: Boolean) {
         context.dataStore.edit { preferences ->
             preferences[VAI_A_2] = vaiA2
+        }
+    }
+
+    suspend fun saveVibrar(vibrar: Boolean) {
+        context.dataStore.edit { preferences ->
+            preferences[VIBRAR] = vibrar
         }
     }
 }
