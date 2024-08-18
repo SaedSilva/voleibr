@@ -87,6 +87,7 @@ private fun App(
             onClickSwitchVibrar = { viewModel.onEvent(MainScreenEvent.SwitchVibrar) },
             onAddTeamNameChanged = { viewModel.onEvent(MainScreenEvent.OnAddTeamNameChanged(it)) },
             onClickAddTeam = { viewModel.onEvent(MainScreenEvent.ClickedAddTeam) },
+            onClickDeleteTeam = { viewModel.onEvent(MainScreenEvent.ClickedDeleteTeam(it)) },
             onClickResetPoints = { viewModel.onEvent(MainScreenEvent.ResetPoints) }
         )
     }

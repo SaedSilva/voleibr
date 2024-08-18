@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
@@ -27,6 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.dev.saed.voleibr.R
+import br.dev.saed.voleibr.model.entities.Team
 import br.dev.saed.voleibr.ui.theme.VoleibrTheme
 
 @Composable
@@ -41,6 +43,7 @@ fun MainScreen(
     onClickSwitchVibrar: () -> Unit = {},
     onAddTeamNameChanged: (String) -> Unit = {},
     onClickAddTeam: () -> Unit = {},
+    onClickDeleteTeam: (Team) -> Unit = {},
     onClickResetPoints: () -> Unit = {}
 ) {
 
@@ -171,12 +174,22 @@ fun MainScreen(
         Text(text = stringResource(id = R.string.txt_teams_in_queue), fontSize = 24.sp)
         HorizontalDivider()
         uiState.teamsInQueue.forEachIndexed { index, team ->
-            Text(
-                text = "${index + 1} - ${team.nome}",
-                textAlign = TextAlign.Center,
-                fontSize = 28.sp,
-                modifier = Modifier.fillMaxWidth()
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = "${index + 1} - ${team.nome}",
+                    textAlign = TextAlign.Center,
+                    fontSize = 28.sp
+                )
+                Button(onClick = {
+                    onClickDeleteTeam(team)
+                }) {
+                    Icon(imageVector = Icons.Default.Delete, contentDescription = null)
+                }
+            }
             HorizontalDivider()
         }
 

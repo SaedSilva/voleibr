@@ -14,8 +14,8 @@ import kotlinx.coroutines.launch
 
 data class MainScreenState(
     var maxPoints: Int = 12,
-    var team1: Team = Team("Time 1"),
-    var team2: Team = Team("Time 2"),
+    var team1: Team = Team(nome = "Time 1"),
+    var team2: Team = Team(nome = "Time 2"),
     val teamsInQueue: List<Team> = ArrayDeque(),
     val vaiA2: Boolean = true,
     val vibrar: Boolean = true,
@@ -28,16 +28,12 @@ data class MainScreenState(
             if (team1.pontos >= maxPoints) {
                 if (teamsInQueue.isEmpty()) {
                     team2.pontos = 0
-                } else {
-                    team2 = teamsInQueue.first()
                 }
                 team1.pontos = 0
                 return team1
             } else if (team2.pontos >= maxPoints) {
                 if (teamsInQueue.isEmpty()) {
                     team1.pontos = 0
-                } else {
-                    team1 = teamsInQueue.first()
                 }
                 team2.pontos = 0
                 return team2
@@ -47,19 +43,16 @@ data class MainScreenState(
                 println("${team1.nome} ganhou!")
                 if (teamsInQueue.isEmpty()) {
                     team2.pontos = 0
-                } else {
-                    team2 = teamsInQueue.first()
                 }
                 team1.pontos = 0
+                return team1
             } else if (team2.pontos >= maxPoints && team2.pontos >= team1.pontos + 2) {
                 println("${team2.nome} ganhou!")
                 if (teamsInQueue.isEmpty()) {
                     team1.pontos = 0
-                } else {
-                    team1 = teamsInQueue.first()
                 }
                 team2.pontos = 0
-
+                return team2
             }
         }
         return null
@@ -75,6 +68,7 @@ sealed class MainScreenEvent {
     data object SwitchVibrar : MainScreenEvent()
     data object ClickedAddTeam : MainScreenEvent()
     data object ResetPoints : MainScreenEvent()
+    data class ClickedDeleteTeam(val team: Team) : MainScreenEvent()
     data class OnMaxPointsChanged(val maxPoints: Int) : MainScreenEvent()
     data class OnTeam1NameChanged(val name: String) : MainScreenEvent()
     data class OnTeam2NameChanged(val name: String) : MainScreenEvent()
@@ -104,12 +98,12 @@ class MainViewModel(
             _uiState.update {
                 it.copy(
                     maxPoints = maxPoints,
-                    team1 = Team(team1, pointTeam1),
-                    team2 = Team(team2, pointTeam2),
+                    team1 = Team(nome = team1, pontos = pointTeam1),
+                    team2 = Team(nome = team2, pontos = pointTeam2),
                     vaiA2 = vaiA2,
                     vibrar = vibrar,
                     teamsInQueue = teams.map { team ->
-                        Team(team.name)
+                        Team(id = team.id, nome = team.name)
                     }
                 )
             }
@@ -184,6 +178,18 @@ class MainViewModel(
                 }
             }
 
+            is MainScreenEvent.ClickedDeleteTeam -> {
+                viewModelScope.launch {
+                    repository.removeTeam(TeamEntity(event.team.id, event.team.nome))
+                    val teams = repository.queue.first()
+                    _uiState.update {
+                        it.copy(teamsInQueue = teams.map { team ->
+                            Team(team.id, team.name)
+                        })
+                    }
+                }
+            }
+
             is MainScreenEvent.ResetPoints -> {
                 _uiState.update {
                     it.copy(team1 = it.team1.copy(pontos = 0), team2 = it.team2.copy(pontos = 0))
@@ -213,35 +219,44 @@ class MainViewModel(
     }
 
     private fun testWinner() {
-        _uiState.value.testarGanhador()?.let {
-            _uiState.update { state ->
-                state.copy(
-                    team1 = state.team1.copy(),
-                    team2 = state.team2.copy()
-                )
+        val winner = _uiState.value.testarGanhador()
+        if (winner != null) {
+            _uiState.update {
+                it.copy(team1 = it.team1.copy(pontos = 0), team2 = it.team2.copy(pontos = 0))
             }
             viewModelScope.launch {
-                dataStoreHelper.saveTeam1(_uiState.value.team1.nome)
-                dataStoreHelper.saveTeam2(_uiState.value.team2.nome)
+                val queue = repository.queue.first()
+                if (queue.isNotEmpty()) {
+                    val loser = if(winner == _uiState.value.team1) _uiState.value.team2 else _uiState.value.team1
+                    rotateTeams(winner, loser)
+                }
             }
-            rotateTeams()
-
-        } ?: {
-
         }
     }
 
-    private fun rotateTeams() {
+    private fun rotateTeams(winner: Team, loser: Team) {
         viewModelScope.launch {
-            val firstTeam = repository.queue.first().first()
+            repository.addTeam(TeamEntity(loser.id, loser.nome))
+
+            val teamToDataStore = repository.queue.first().first()
+
+            if (dataStoreHelper.team1Flow.first() == loser.nome) {
+                dataStoreHelper.saveTeam1(teamToDataStore.name)
+            } else {
+                dataStoreHelper.saveTeam2(teamToDataStore.name)
+            }
             repository.removeFirstTeam()
-            repository.addTeam(TeamEntity(0, firstTeam.name))
             val teams = repository.queue.first()
+
             _uiState.update {
-                it.copy(teamsInQueue = teams.map { team ->
-                    Team(team.name)
-                })
+                it.copy(
+                    team1 = Team(nome = dataStoreHelper.team1Flow.first(), pontos = 0), team2 = Team(nome = dataStoreHelper.team2Flow.first(), pontos = 0),
+                    teamsInQueue = teams.map { team ->
+                        Team(team.id, team.name)
+                    }
+                )
             }
         }
     }
+
 }
