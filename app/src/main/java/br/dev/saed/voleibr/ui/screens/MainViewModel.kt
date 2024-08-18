@@ -2,8 +2,11 @@ package br.dev.saed.voleibr.ui.screens
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import br.dev.saed.voleibr.model.repositories.DataStoreHelper
 import br.dev.saed.voleibr.model.entities.Team
+import br.dev.saed.voleibr.model.repositories.datastore.DataStoreHelper
+import br.dev.saed.voleibr.model.repositories.db.TeamDAO
+import br.dev.saed.voleibr.model.repositories.db.TeamDatabase
+import br.dev.saed.voleibr.model.repositories.db.TeamRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
@@ -98,7 +101,8 @@ sealed class MainScreenEvent {
 }
 
 class MainViewModel(
-    private val dataStoreHelper: DataStoreHelper
+    private val dataStoreHelper: DataStoreHelper,
+    private val repository: TeamRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MainScreenState())

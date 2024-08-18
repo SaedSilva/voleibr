@@ -1,4 +1,4 @@
-package br.dev.saed.voleibr.model.repositories
+package br.dev.saed.voleibr.model.repositories.datastore
 
 import android.content.Context
 import androidx.datastore.core.DataStore
