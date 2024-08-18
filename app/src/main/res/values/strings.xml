@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Marcador Volei BR</string>
+    <string name="app_name">Marcador de Pontuação Volei</string>
     <string name="txt_max_points">Max Pontos:</string>
     <string name="txt_score">Pontuar</string>
     <string name="txt_vai_a_2">Vai a 2</string>
@@ -7,5 +7,6 @@
     <string name="txt_add_queue">Adicionar time a fila</string>
     <string name="txt_teams_in_queue">Times na fila:</string>
     <string name="edit_team_name">Nome do time</string>
-    <string name="btn_reset_points">Reiniciar</string>
+    <string name="btn_reset_points">Reiniciar Pontuação</string>
+    <string name="btn_clear_queue">Limpar Fila</string>
 </resources>

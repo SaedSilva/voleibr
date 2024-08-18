@@ -66,6 +66,7 @@ sealed class MainScreenEvent {
     data object IncreaseMaxPoints : MainScreenEvent()
     data object SwitchVaiA2 : MainScreenEvent()
     data object SwitchVibrar : MainScreenEvent()
+    data object ClearQueue : MainScreenEvent()
     data object ClickedAddTeam : MainScreenEvent()
     data object ResetPoints : MainScreenEvent()
     data class ClickedDeleteTeam(val team: Team) : MainScreenEvent()
@@ -134,16 +135,25 @@ class MainViewModel(
 
             is MainScreenEvent.DecreaseMaxPoints -> {
                 _uiState.update {
-                    it.copy(maxPoints = it.maxPoints - 1)
+                    if (it.maxPoints > 1) {
+                        it.copy(maxPoints = it.maxPoints - 1)
+                    } else {
+                        it
+                    }
                 }
                 viewModelScope.launch {
                     dataStoreHelper.saveMaxPoints(_uiState.value.maxPoints)
                 }
+
             }
 
             is MainScreenEvent.IncreaseMaxPoints -> {
                 _uiState.update {
-                    it.copy(maxPoints = it.maxPoints + 1)
+                    if (it.maxPoints < 99) {
+                        it.copy(maxPoints = it.maxPoints + 1)
+                    } else {
+                        it
+                    }
                 }
                 viewModelScope.launch {
                     dataStoreHelper.saveMaxPoints(_uiState.value.maxPoints)
@@ -166,6 +176,15 @@ class MainViewModel(
 
                 viewModelScope.launch {
                     dataStoreHelper.saveVibrar(_uiState.value.vibrar)
+                }
+            }
+
+            is MainScreenEvent.ClearQueue -> {
+                viewModelScope.launch {
+                    repository.removeAllTeams()
+                }
+                _uiState.update {
+                    it.copy(teamsInQueue = emptyList())
                 }
             }
 
@@ -227,7 +246,8 @@ class MainViewModel(
             viewModelScope.launch {
                 val queue = repository.queue.first()
                 if (queue.isNotEmpty()) {
-                    val loser = if(winner == _uiState.value.team1) _uiState.value.team2 else _uiState.value.team1
+                    val loser =
+                        if (winner == _uiState.value.team1) _uiState.value.team2 else _uiState.value.team1
                     rotateTeams(winner, loser)
                 }
             }
@@ -250,7 +270,8 @@ class MainViewModel(
 
             _uiState.update {
                 it.copy(
-                    team1 = Team(nome = dataStoreHelper.team1Flow.first(), pontos = 0), team2 = Team(nome = dataStoreHelper.team2Flow.first(), pontos = 0),
+                    team1 = Team(nome = dataStoreHelper.team1Flow.first(), pontos = 0),
+                    team2 = Team(nome = dataStoreHelper.team2Flow.first(), pontos = 0),
                     teamsInQueue = teams.map { team ->
                         Team(team.id, team.name)
                     }

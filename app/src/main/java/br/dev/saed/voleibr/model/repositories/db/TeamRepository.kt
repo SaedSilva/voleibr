@@ -20,5 +20,9 @@ public class TeamRepository(
         dao.deleteFirstTeam()
     }
 
+    suspend fun removeAllTeams() = withContext(IO) {
+        dao.deleteAll()
+    }
+
 
 }

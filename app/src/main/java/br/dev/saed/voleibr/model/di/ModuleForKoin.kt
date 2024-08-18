@@ -10,6 +10,8 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
+//TODO fix koin
+
 val appModule = module {
     viewModelOf(::MainViewModel)
 }

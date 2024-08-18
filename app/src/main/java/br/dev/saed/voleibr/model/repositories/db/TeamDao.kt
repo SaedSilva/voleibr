@@ -25,4 +25,7 @@ interface TeamDao {
             delete(firstTeam.first())
         }
     }
+
+    @Query("DELETE FROM team")
+    suspend fun deleteAll()
 }
