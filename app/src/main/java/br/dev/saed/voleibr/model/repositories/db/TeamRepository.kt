@@ -4,7 +4,7 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
 
 public class TeamRepository(
-    private val dao: TeamDAO
+    private val dao: TeamDao
 ) {
     val queue get() = dao.getAll()
 
@@ -15,4 +15,10 @@ public class TeamRepository(
     suspend fun removeTeam(team: TeamEntity) = withContext(IO) {
         dao.delete(team)
     }
+
+    suspend fun removeFirstTeam() = withContext(IO) {
+        dao.deleteFirstTeam()
+    }
+
+
 }

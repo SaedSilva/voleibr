@@ -12,13 +12,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.room.Room
+import br.dev.saed.voleibr.model.repositories.datastore.DataStoreHelper
+import br.dev.saed.voleibr.model.repositories.db.TeamDatabase
+import br.dev.saed.voleibr.model.repositories.db.TeamRepository
 import br.dev.saed.voleibr.ui.screens.MainScreen
 import br.dev.saed.voleibr.ui.screens.MainScreenEvent
 import br.dev.saed.voleibr.ui.screens.MainScreenState
 import br.dev.saed.voleibr.ui.screens.MainViewModel
 import br.dev.saed.voleibr.ui.theme.VoleibrTheme
 import br.dev.saed.voleibr.utils.vibrator
+import org.koin.androidx.compose.koinViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {
@@ -28,14 +34,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             VoleibrTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    val viewModel: MainViewModel by viewModel()
-                    val uiState by viewModel.uiState.collectAsState()
-
                     App(
-                        modifier = Modifier.padding(innerPadding),
-                        context = applicationContext,
-                        viewModel = viewModel,
-                        uiState = uiState
+                        modifier = Modifier.padding(innerPadding)
                     )
                 }
             }
@@ -45,11 +45,25 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 private fun App(
-    modifier: Modifier = Modifier,
-    context: Context,
-    viewModel: MainViewModel,
-    uiState: MainScreenState,
+    modifier: Modifier = Modifier
 ) {
+
+    val context = LocalContext.current
+
+    val db = Room.databaseBuilder(
+        context,
+        TeamDatabase::class.java,
+        "team_database"
+    ).build()
+
+    val teamDao = db.teamDAO()
+
+    val viewModel: MainViewModel = MainViewModel(
+        DataStoreHelper(context),
+        TeamRepository(teamDao)
+    )
+
+    val uiState by viewModel.uiState.collectAsState()
 
     VoleibrTheme {
         MainScreen(

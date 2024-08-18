@@ -4,8 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.dev.saed.voleibr.model.entities.Team
 import br.dev.saed.voleibr.model.repositories.datastore.DataStoreHelper
-import br.dev.saed.voleibr.model.repositories.db.TeamDAO
-import br.dev.saed.voleibr.model.repositories.db.TeamDatabase
+import br.dev.saed.voleibr.model.repositories.db.TeamEntity
 import br.dev.saed.voleibr.model.repositories.db.TeamRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,31 +16,12 @@ data class MainScreenState(
     var maxPoints: Int = 12,
     var team1: Team = Team("Time 1"),
     var team2: Team = Team("Time 2"),
-    val teamsInQueue: ArrayDeque<Team> = arrayOf(Team("Time 3"), Team("Time 4")).toCollection(
-        ArrayDeque()
-    ),
+    val teamsInQueue: List<Team> = ArrayDeque(),
     val vaiA2: Boolean = true,
     val vibrar: Boolean = true,
     val teamToAdd: Team = Team()
 ) {
-    fun pontos() {
-    }
 
-    fun pontuarTime1() {
-        team1.pontos++
-    }
-
-    fun pontuarTime2() {
-        team2.pontos++
-    }
-
-    fun adicionarTime(team: Team) {
-        teamsInQueue.add(team)
-    }
-
-    fun removerTime(index: Int) {
-        teamsInQueue.removeAt(index)
-    }
 
     fun testarGanhador(): Team? {
         if (!vaiA2) {
@@ -49,7 +29,7 @@ data class MainScreenState(
                 if (teamsInQueue.isEmpty()) {
                     team2.pontos = 0
                 } else {
-                    team2 = teamsInQueue.removeFirst()
+                    team2 = teamsInQueue.first()
                 }
                 team1.pontos = 0
                 return team1
@@ -57,7 +37,7 @@ data class MainScreenState(
                 if (teamsInQueue.isEmpty()) {
                     team1.pontos = 0
                 } else {
-                    team1 = teamsInQueue.removeFirst()
+                    team1 = teamsInQueue.first()
                 }
                 team2.pontos = 0
                 return team2
@@ -68,7 +48,7 @@ data class MainScreenState(
                 if (teamsInQueue.isEmpty()) {
                     team2.pontos = 0
                 } else {
-                    team2 = teamsInQueue.removeFirst()
+                    team2 = teamsInQueue.first()
                 }
                 team1.pontos = 0
             } else if (team2.pontos >= maxPoints && team2.pontos >= team1.pontos + 2) {
@@ -76,9 +56,10 @@ data class MainScreenState(
                 if (teamsInQueue.isEmpty()) {
                     team1.pontos = 0
                 } else {
-                    team1 = teamsInQueue.removeFirst()
+                    team1 = teamsInQueue.first()
                 }
                 team2.pontos = 0
+
             }
         }
         return null
@@ -91,7 +72,7 @@ sealed class MainScreenEvent {
     data object DecreaseMaxPoints : MainScreenEvent()
     data object IncreaseMaxPoints : MainScreenEvent()
     data object SwitchVaiA2 : MainScreenEvent()
-    data object SwitchVibrar: MainScreenEvent()
+    data object SwitchVibrar : MainScreenEvent()
     data object ClickedAddTeam : MainScreenEvent()
     data object ResetPoints : MainScreenEvent()
     data class OnMaxPointsChanged(val maxPoints: Int) : MainScreenEvent()
@@ -118,6 +99,7 @@ class MainViewModel(
             val pointTeam2 = dataStoreHelper.team2PointsFlow.first()
             val vaiA2 = dataStoreHelper.vaiA2Flow.first()
             val vibrar = dataStoreHelper.vibrarFlow.first()
+            val teams = repository.queue.first()
 
             _uiState.update {
                 it.copy(
@@ -125,7 +107,10 @@ class MainViewModel(
                     team1 = Team(team1, pointTeam1),
                     team2 = Team(team2, pointTeam2),
                     vaiA2 = vaiA2,
-                    vibrar = vibrar
+                    vibrar = vibrar,
+                    teamsInQueue = teams.map { team ->
+                        Team(team.name)
+                    }
                 )
             }
         }
@@ -190,8 +175,13 @@ class MainViewModel(
                 }
             }
 
-            is MainScreenEvent.ClickedAddTeam -> _uiState.update {
-                it.copy(teamsInQueue = it.teamsInQueue.apply { add(it.teamToAdd) })
+            is MainScreenEvent.ClickedAddTeam -> {
+                viewModelScope.launch {
+                    repository.addTeam(TeamEntity(0, _uiState.value.teamToAdd.nome))
+                }
+                _uiState.update {
+                    it.copy(teamsInQueue = it.teamsInQueue + it.teamToAdd)
+                }
             }
 
             is MainScreenEvent.ResetPoints -> {
@@ -230,10 +220,28 @@ class MainViewModel(
                     team2 = state.team2.copy()
                 )
             }
+            viewModelScope.launch {
+                dataStoreHelper.saveTeam1(_uiState.value.team1.nome)
+                dataStoreHelper.saveTeam2(_uiState.value.team2.nome)
+            }
+            rotateTeams()
+
+        } ?: {
+
         }
+    }
+
+    private fun rotateTeams() {
         viewModelScope.launch {
-            dataStoreHelper.saveTeam1(_uiState.value.team1.nome)
-            dataStoreHelper.saveTeam2(_uiState.value.team2.nome)
+            val firstTeam = repository.queue.first().first()
+            repository.removeFirstTeam()
+            repository.addTeam(TeamEntity(0, firstTeam.name))
+            val teams = repository.queue.first()
+            _uiState.update {
+                it.copy(teamsInQueue = teams.map { team ->
+                    Team(team.name)
+                })
+            }
         }
     }
 }

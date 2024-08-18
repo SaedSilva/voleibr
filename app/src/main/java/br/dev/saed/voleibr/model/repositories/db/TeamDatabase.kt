@@ -5,5 +5,5 @@ import androidx.room.RoomDatabase
 
 @Database(entities = [TeamEntity::class], version = 1)
 abstract class TeamDatabase: RoomDatabase() {
-    abstract fun teamDAO(): TeamDAO
+    abstract fun teamDAO(): TeamDao
 }
