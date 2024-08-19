@@ -31,6 +31,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -149,7 +150,8 @@ fun MainScreen(
                                 Image(
                                     painter = painterResource(id = R.drawable.baseline_remove_24),
                                     contentDescription = null,
-                                    modifier = Modifier.size(32.dp)
+                                    modifier = Modifier.size(32.dp),
+                                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary)
                                 )
                             }
 
@@ -236,7 +238,8 @@ fun MainScreen(
                                 Image(
                                     painter = painterResource(id = R.drawable.baseline_remove_24),
                                     contentDescription = null,
-                                    modifier = Modifier.size(32.dp)
+                                    modifier = Modifier.size(32.dp),
+                                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary)
                                 )
                             }
 
