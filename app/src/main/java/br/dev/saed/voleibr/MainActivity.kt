@@ -79,6 +79,7 @@ private fun App(
             onClickTeam2ScoreDecrease = {
                 viewModel.onEvent(MainScreenEvent.Team2ScoreDecreased)
             },
+            onClickChangeTeams = { viewModel.onEvent(MainScreenEvent.ChangeTeams) },
             onClickSwitchVaiA2 = { viewModel.onEvent(MainScreenEvent.SwitchVaiA2) },
             onClickSwitchVibrar = { viewModel.onEvent(MainScreenEvent.SwitchVibrar) },
             onClickClearQueue = { viewModel.onEvent(MainScreenEvent.ClearQueue) },

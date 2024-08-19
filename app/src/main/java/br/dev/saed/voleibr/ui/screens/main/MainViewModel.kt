@@ -118,6 +118,8 @@ class MainViewModel(
                 }
             }
 
+            is MainScreenEvent.ChangeTeams -> switchTeams()
+
             is MainScreenEvent.SwitchVaiA2 -> {
                 _uiState.update {
                     it.copy(vaiA2 = !it.vaiA2)
@@ -238,4 +240,18 @@ class MainViewModel(
         }
     }
 
+    private fun switchTeams() {
+        viewModelScope.launch {
+            val team1 = dataStoreHelper.team1Flow.first()
+            val team2 = dataStoreHelper.team2Flow.first()
+            dataStoreHelper.saveTeam1(team2)
+            dataStoreHelper.saveTeam2(team1)
+            _uiState.update {
+                it.copy(
+                    team1 = Team(nome = team2, pontos = it.team2.pontos),
+                    team2 = Team(nome = team1, pontos = it.team1.pontos)
+                )
+            }
+        }
+    }
 }

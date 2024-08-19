@@ -7,15 +7,15 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Refresh
@@ -48,6 +48,7 @@ fun MainScreen(
     uiState: MainScreenState,
     onClickDecreaseMaxPoints: () -> Unit = {},
     onClickIncreaseMaxPoints: () -> Unit = {},
+    onClickChangeTeams: () -> Unit = {},
     onClickTeam1Scored: () -> Unit = {},
     onClickTeam1ScoreDecrease: () -> Unit = {},
     onClickTeam2Scored: () -> Unit = {},
@@ -170,19 +171,42 @@ fun MainScreen(
                     }
                 }
 
-                Button(
-                    onClick = { onClickResetPoints() },
-                    modifier = Modifier
-                        .size(width = 40.dp, height = 40.dp)
-                        .padding(top = 8.dp),
-                    contentPadding = PaddingValues(2.dp),
-                    shape = MaterialTheme.shapes.small
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Refresh,
-                        contentDescription = stringResource(id = R.string.btn_reset_points),
-                        modifier = Modifier.size(32.dp)
-                    )
+                Column() {
+                    Button(
+                        onClick = { onClickResetPoints() },
+                        modifier = Modifier
+                            .size(width = 40.dp, height = 40.dp)
+                            .padding(bottom = 4.dp),
+                        contentPadding = PaddingValues(2.dp),
+                        shape = MaterialTheme.shapes.small
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Refresh,
+                            contentDescription = stringResource(id = R.string.btn_reset_points),
+                            modifier = Modifier.size(32.dp)
+                        )
+                    }
+                    Button(
+                        onClick = { onClickChangeTeams() },
+                        modifier = Modifier
+                            .size(width = 40.dp, height = 40.dp)
+                            .padding(top = 4.dp),
+                        contentPadding = PaddingValues(2.dp),
+                        shape = MaterialTheme.shapes.small
+                    ) {
+                        Column{
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = stringResource(id = R.string.btn_reset_points),
+                                modifier = Modifier.size(16.dp)
+                            )
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                                contentDescription = stringResource(id = R.string.btn_reset_points),
+                                modifier = Modifier.size(16.dp)
+                            )
+                        }
+                    }
                 }
 
                 Card {
