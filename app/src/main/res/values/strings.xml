@@ -9,4 +9,13 @@
     <string name="edit_team_name">Nome do time</string>
     <string name="btn_reset_points">Reiniciar Pontuação</string>
     <string name="btn_clear_queue">Limpar Fila</string>
+
+    <string name="txt_acss_btn_decrease_max_points">Diminuir pontos máximos</string>
+    <string name="txt_acss_btn_increase_max_points">Aumentar pontos máximos</string>
+
+    <string name="txt_acss_btn_score_team_1">Pontuar time esquerda</string>
+    <string name="txt_acss_btn_score_team_2">Pontuar time direita</string>
+
+    <string name="txt_acss_btn_delete_team">Deletar time</string>
+
 </resources>

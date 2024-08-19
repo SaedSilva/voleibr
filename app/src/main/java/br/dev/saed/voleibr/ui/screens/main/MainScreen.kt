@@ -1,12 +1,16 @@
-package br.dev.saed.voleibr.ui.screens
+package br.dev.saed.voleibr.ui.screens.main
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -14,6 +18,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
@@ -44,7 +49,9 @@ fun MainScreen(
     onClickDecreaseMaxPoints: () -> Unit = {},
     onClickIncreaseMaxPoints: () -> Unit = {},
     onClickTeam1Scored: () -> Unit = {},
+    onClickTeam1ScoreDecrease: () -> Unit = {},
     onClickTeam2Scored: () -> Unit = {},
+    onClickTeam2ScoreDecrease: () -> Unit = {},
     onClickSwitchVaiA2: () -> Unit = {},
     onClickSwitchVibrar: () -> Unit = {},
     onClickClearQueue: () -> Unit = {},
@@ -80,7 +87,7 @@ fun MainScreen(
                 Button(onClick = { onClickDecreaseMaxPoints() }) {
                     Icon(
                         painter = painterResource(id = R.drawable.baseline_remove_24),
-                        contentDescription = null
+                        contentDescription = stringResource(id = R.string.txt_acss_btn_decrease_max_points)
                     )
                 }
 
@@ -101,64 +108,128 @@ fun MainScreen(
                 }
 
                 Button(onClick = { onClickIncreaseMaxPoints() }) {
-                    Icon(imageVector = Icons.Default.Add, contentDescription = null)
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = stringResource(id = R.string.txt_acss_btn_increase_max_points)
+                    )
                 }
-            }
-
-            Button(
-                onClick = {
-                    onClickResetPoints()
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp)
-            ) {
-                Text(text = stringResource(id = R.string.btn_reset_points))
             }
 
             Row(
                 horizontalArrangement = Arrangement.SpaceAround,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
+                    .padding(top = 16.dp)
             ) {
-
                 Card {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.padding(16.dp)
+                        modifier = Modifier.padding(8.dp)
                     ) {
-                        Text(text = uiState.team1.nome, fontSize = 32.sp)
-                        Text(text = uiState.team1.pontos.toString(), fontSize = 32.sp)
-                        Button(onClick = { onClickTeam1Scored() }) {
-                            Image(
-                                painter = painterResource(id = R.drawable.bola_volei),
-                                contentDescription = null
-                            )
-                            Text(
-                                text = stringResource(id = R.string.txt_score),
-                                modifier = Modifier.padding(start = 4.dp)
-                            )
+                        Text(
+                            text = uiState.team1.nome,
+                            fontSize = 24.sp,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.size(width = 150.dp, height = 32.dp)
+                        )
+                        Text(
+                            text = uiState.team1.pontos.toString(),
+                            fontSize = 32.sp
+                        )
+                        Row(modifier = Modifier.padding(top = 4.dp)) {
+                            Button(
+                                onClick = { onClickTeam1ScoreDecrease() },
+                                shape = MaterialTheme.shapes.small,
+                                modifier = Modifier
+                                    .size(width = 40.dp, height = 32.dp)
+                                    .padding(end = 4.dp),
+                                contentPadding = PaddingValues(2.dp)
+                            ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.baseline_remove_24),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(32.dp)
+                                )
+                            }
+
+                            Button(
+                                onClick = { onClickTeam1Scored() },
+                                shape = MaterialTheme.shapes.small,
+                                modifier = Modifier
+                                    .size(width = 40.dp, height = 32.dp)
+                                    .padding(start = 4.dp),
+                                contentPadding = PaddingValues(2.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Add,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(32.dp)
+                                )
+                            }
                         }
                     }
+                }
+
+                Button(
+                    onClick = { onClickResetPoints() },
+                    modifier = Modifier
+                        .size(width = 40.dp, height = 40.dp)
+                        .padding(top = 8.dp),
+                    contentPadding = PaddingValues(2.dp),
+                    shape = MaterialTheme.shapes.small
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Refresh,
+                        contentDescription = stringResource(id = R.string.btn_reset_points),
+                        modifier = Modifier.size(32.dp)
+                    )
                 }
 
                 Card {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.padding(16.dp)
+                        modifier = Modifier.padding(8.dp)
                     ) {
-                        Text(text = uiState.team2.nome, fontSize = 32.sp)
-                        Text(text = uiState.team2.pontos.toString(), fontSize = 32.sp)
-                        Button(onClick = { onClickTeam2Scored() }) {
-                            Image(
-                                painter = painterResource(id = R.drawable.bola_volei),
-                                contentDescription = null
-                            )
-                            Text(
-                                text = stringResource(id = R.string.txt_score),
-                                modifier = Modifier.padding(start = 4.dp)
-                            )
+                        Text(
+                            text = uiState.team2.nome,
+                            fontSize = 24.sp,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.size(width = 150.dp, height = 32.dp)
+                        )
+                        Text(
+                            text = uiState.team2.pontos.toString(),
+                            fontSize = 32.sp
+                        )
+                        Row(modifier = Modifier.padding(top = 4.dp)) {
+                            Button(
+                                onClick = { onClickTeam2ScoreDecrease() },
+                                shape = MaterialTheme.shapes.small,
+                                modifier = Modifier
+                                    .size(width = 40.dp, height = 32.dp)
+                                    .padding(end = 4.dp),
+                                contentPadding = PaddingValues(2.dp)
+                            ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.baseline_remove_24),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(32.dp)
+                                )
+                            }
+
+                            Button(
+                                onClick = { onClickTeam2Scored() },
+                                shape = MaterialTheme.shapes.small,
+                                modifier = Modifier
+                                    .size(width = 40.dp, height = 32.dp)
+                                    .padding(start = 4.dp),
+                                contentPadding = PaddingValues(2.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Add,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(32.dp)
+                                )
+                            }
                         }
                     }
                 }
@@ -173,9 +244,7 @@ fun MainScreen(
                 ) {
                     Switch(
                         checked = uiState.vaiA2,
-                        onCheckedChange = {
-                            onClickSwitchVaiA2()
-                        }
+                        onCheckedChange = { onClickSwitchVaiA2() }
                     )
                     Text(
                         text = stringResource(id = R.string.txt_vai_a_2),
@@ -191,9 +260,7 @@ fun MainScreen(
                     )
                     Switch(
                         checked = uiState.vibrar,
-                        onCheckedChange = {
-                            onClickSwitchVibrar()
-                        }
+                        onCheckedChange = { onClickSwitchVibrar() }
                     )
                 }
             }
@@ -209,9 +276,7 @@ fun MainScreen(
             ) {
                 TextField(
                     value = uiState.teamToAdd.nome,
-                    onValueChange = {
-                        onAddTeamNameChanged(it)
-                    },
+                    onValueChange = { onAddTeamNameChanged(it) },
                     singleLine = true,
                     label = { Text(text = stringResource(id = R.string.edit_team_name)) },
                     modifier = Modifier.fillMaxWidth(),
@@ -227,13 +292,11 @@ fun MainScreen(
                         onClickAddTeam()
                         onAddTeamNameChanged("")
                     },
-                    modifier = Modifier
-                        .fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
                         text = stringResource(id = R.string.txt_add_queue),
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.onPrimary
+                        textAlign = TextAlign.Center
                     )
                 }
             }
@@ -245,12 +308,16 @@ fun MainScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = stringResource(id = R.string.txt_teams_in_queue), fontSize = 24.sp)
-                Button(onClick = {
-                    onClickClearQueue()
-                }) {
+                Text(
+                    text = stringResource(id = R.string.txt_teams_in_queue),
+                    fontSize = 24.sp
+                )
+                Button(onClick = { onClickClearQueue() }) {
                     Text(text = stringResource(id = R.string.btn_clear_queue))
-                    Icon(imageVector = Icons.Default.Delete, contentDescription = null)
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = stringResource(id = R.string.btn_clear_queue)
+                    )
                 }
             }
 
@@ -271,10 +338,11 @@ fun MainScreen(
                             textAlign = TextAlign.Center,
                             fontSize = 28.sp
                         )
-                        Button(onClick = {
-                            onClickDeleteTeam(team)
-                        }) {
-                            Icon(imageVector = Icons.Default.Delete, contentDescription = null)
+                        Button(onClick = { onClickDeleteTeam(team) }) {
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = stringResource(id = R.string.txt_acss_btn_delete_team)
+                            )
                         }
                     }
                     HorizontalDivider()

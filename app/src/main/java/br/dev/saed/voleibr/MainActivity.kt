@@ -4,9 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -17,9 +14,9 @@ import androidx.room.Room
 import br.dev.saed.voleibr.model.repositories.datastore.DataStoreHelper
 import br.dev.saed.voleibr.model.repositories.db.TeamDatabase
 import br.dev.saed.voleibr.model.repositories.db.TeamRepository
-import br.dev.saed.voleibr.ui.screens.MainScreen
-import br.dev.saed.voleibr.ui.screens.MainScreenEvent
-import br.dev.saed.voleibr.ui.screens.MainViewModel
+import br.dev.saed.voleibr.ui.screens.main.MainScreen
+import br.dev.saed.voleibr.ui.screens.main.MainScreenEvent
+import br.dev.saed.voleibr.ui.screens.main.MainViewModel
 import br.dev.saed.voleibr.ui.theme.VoleibrTheme
 import br.dev.saed.voleibr.utils.vibrator
 
@@ -59,31 +56,37 @@ private fun App(
     val uiState by viewModel.uiState.collectAsState()
 
     VoleibrTheme {
-            MainScreen(
-                modifier = modifier,
-                uiState = uiState,
-                onClickDecreaseMaxPoints = { viewModel.onEvent(MainScreenEvent.DecreaseMaxPoints) },
-                onClickIncreaseMaxPoints = { viewModel.onEvent(MainScreenEvent.IncreaseMaxPoints) },
-                onClickTeam1Scored = {
-                    viewModel.onEvent(MainScreenEvent.Team1Scored)
-                    if (viewModel.uiState.value.vibrar) {
-                        context.vibrator(1010)
-                    }
-                },
-                onClickTeam2Scored = {
-                    viewModel.onEvent(MainScreenEvent.Team2Scored)
-                    if (viewModel.uiState.value.vibrar) {
-                        context.vibrator(1010)
-                    }
-                },
-                onClickSwitchVaiA2 = { viewModel.onEvent(MainScreenEvent.SwitchVaiA2) },
-                onClickSwitchVibrar = { viewModel.onEvent(MainScreenEvent.SwitchVibrar) },
-                onClickClearQueue = { viewModel.onEvent(MainScreenEvent.ClearQueue) },
-                onAddTeamNameChanged = { viewModel.onEvent(MainScreenEvent.OnAddTeamNameChanged(it)) },
-                onClickAddTeam = { viewModel.onEvent(MainScreenEvent.ClickedAddTeam) },
-                onClickDeleteTeam = { viewModel.onEvent(MainScreenEvent.ClickedDeleteTeam(it)) },
-                onClickResetPoints = { viewModel.onEvent(MainScreenEvent.ResetPoints) }
-            )
+        MainScreen(
+            modifier = modifier,
+            uiState = uiState,
+            onClickDecreaseMaxPoints = { viewModel.onEvent(MainScreenEvent.DecreaseMaxPoints) },
+            onClickIncreaseMaxPoints = { viewModel.onEvent(MainScreenEvent.IncreaseMaxPoints) },
+            onClickTeam1Scored = {
+                viewModel.onEvent(MainScreenEvent.Team1Scored)
+                if (viewModel.uiState.value.vibrar) {
+                    context.vibrator(1010)
+                }
+            },
+            onClickTeam1ScoreDecrease = {
+                viewModel.onEvent(MainScreenEvent.Team1ScoreDecreased)
+            },
+            onClickTeam2Scored = {
+                viewModel.onEvent(MainScreenEvent.Team2Scored)
+                if (viewModel.uiState.value.vibrar) {
+                    context.vibrator(1010)
+                }
+            },
+            onClickTeam2ScoreDecrease = {
+                viewModel.onEvent(MainScreenEvent.Team2ScoreDecreased)
+            },
+            onClickSwitchVaiA2 = { viewModel.onEvent(MainScreenEvent.SwitchVaiA2) },
+            onClickSwitchVibrar = { viewModel.onEvent(MainScreenEvent.SwitchVibrar) },
+            onClickClearQueue = { viewModel.onEvent(MainScreenEvent.ClearQueue) },
+            onAddTeamNameChanged = { viewModel.onEvent(MainScreenEvent.OnAddTeamNameChanged(it)) },
+            onClickAddTeam = { viewModel.onEvent(MainScreenEvent.ClickedAddTeam) },
+            onClickDeleteTeam = { viewModel.onEvent(MainScreenEvent.ClickedDeleteTeam(it)) },
+            onClickResetPoints = { viewModel.onEvent(MainScreenEvent.ResetPoints) }
+        )
     }
 }
 
