@@ -149,11 +149,16 @@ class MainViewModel(
             }
 
             is MainScreenEvent.ClickedAddTeam -> {
-                viewModelScope.launch {
-                    repository.addTeam(TeamEntity(0, _uiState.value.teamToAdd.nome))
-                }
-                _uiState.update {
-                    it.copy(teamsInQueue = it.teamsInQueue + it.teamToAdd)
+                if (_uiState.value.teamToAdd.nome.isNotBlank()) {
+                    viewModelScope.launch {
+                        repository.addTeam(TeamEntity(0, _uiState.value.teamToAdd.nome))
+                        val teams = repository.queue.first()
+                        _uiState.update {
+                            it.copy(teamsInQueue = teams.map { team ->
+                                Team(team.id, team.name)
+                            })
+                        }
+                    }
                 }
             }
 

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -118,67 +119,76 @@ fun MainScreen(
             }
 
             Row(
-                horizontalArrangement = Arrangement.SpaceAround,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp)
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Card {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.padding(8.dp)
+                Column(modifier = Modifier.size(width = 150.dp, height = 225.dp)) {
+                    Card(modifier = Modifier.fillMaxWidth()) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .fillMaxWidth()
+                        ) {
+                            Text(
+                                text = uiState.team1.pontos.toString(),
+                                fontSize = 64.sp
+                            )
+                            Text(
+                                text = uiState.team1.nome,
+                                fontSize = 24.sp,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.size(width = 125.dp, height = 64.dp)
+                            )
+                        }
+                    }
+                    Row(
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text(
-                            text = uiState.team1.nome,
-                            fontSize = 24.sp,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.size(width = 150.dp, height = 32.dp)
-                        )
-                        Text(
-                            text = uiState.team1.pontos.toString(),
-                            fontSize = 32.sp
-                        )
-                        Row(modifier = Modifier.padding(top = 4.dp)) {
-                            Button(
-                                onClick = { onClickTeam1ScoreDecrease() },
-                                shape = MaterialTheme.shapes.small,
-                                modifier = Modifier
-                                    .size(width = 40.dp, height = 32.dp)
-                                    .padding(end = 4.dp),
-                                contentPadding = PaddingValues(2.dp)
-                            ) {
-                                Image(
-                                    painter = painterResource(id = R.drawable.baseline_remove_24),
-                                    contentDescription = null,
-                                    modifier = Modifier.size(32.dp),
-                                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary)
-                                )
-                            }
-
-                            Button(
-                                onClick = { onClickTeam1Scored() },
-                                shape = MaterialTheme.shapes.small,
-                                modifier = Modifier
-                                    .size(width = 40.dp, height = 32.dp)
-                                    .padding(start = 4.dp),
-                                contentPadding = PaddingValues(2.dp)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Add,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(32.dp)
-                                )
-                            }
+                        Button(
+                            onClick = { onClickTeam1ScoreDecrease() },
+                            shape = MaterialTheme.shapes.small,
+                            modifier = Modifier
+                                .size(width = 50.dp, height = 40.dp)
+                                .padding(end = 4.dp),
+                            contentPadding = PaddingValues(2.dp)
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.baseline_remove_24),
+                                contentDescription = null,
+                                modifier = Modifier.size(32.dp),
+                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary)
+                            )
+                        }
+                        Button(
+                            onClick = { onClickTeam1Scored() },
+                            shape = MaterialTheme.shapes.small,
+                            modifier = Modifier
+                                .size(width = 50.dp, height = 40.dp)
+                                .padding(start = 4.dp),
+                            contentPadding = PaddingValues(2.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Add,
+                                contentDescription = null,
+                                modifier = Modifier.size(32.dp)
+                            )
                         }
                     }
                 }
 
-                Column() {
+                Column(
+                    modifier = Modifier.size(width = 40.dp, height = 225.dp),
+                    verticalArrangement = Arrangement.Top,
+                ) {
                     Button(
                         onClick = { onClickResetPoints() },
                         modifier = Modifier
-                            .size(width = 40.dp, height = 40.dp)
-                            .padding(bottom = 4.dp),
+                            .size(width = 40.dp, height = 40.dp),
                         contentPadding = PaddingValues(2.dp),
                         shape = MaterialTheme.shapes.small
                     ) {
@@ -191,73 +201,83 @@ fun MainScreen(
                     Button(
                         onClick = { onClickChangeTeams() },
                         modifier = Modifier
-                            .size(width = 40.dp, height = 40.dp)
-                            .padding(top = 4.dp),
+                            .padding(top = 8.dp)
+                            .size(width = 40.dp, height = 40.dp),
                         contentPadding = PaddingValues(2.dp),
                         shape = MaterialTheme.shapes.small
                     ) {
-                        Column{
+                        Column {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = stringResource(id = R.string.btn_reset_points),
-                                modifier = Modifier.size(16.dp)
+                                modifier = Modifier.size(15.dp)
                             )
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                                 contentDescription = stringResource(id = R.string.btn_reset_points),
-                                modifier = Modifier.size(16.dp)
+                                modifier = Modifier.size(15.dp)
                             )
                         }
                     }
                 }
 
-                Card {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.padding(8.dp)
-                    ) {
-                        Text(
-                            text = uiState.team2.nome,
-                            fontSize = 24.sp,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.size(width = 150.dp, height = 32.dp)
-                        )
-                        Text(
-                            text = uiState.team2.pontos.toString(),
-                            fontSize = 32.sp
-                        )
-                        Row(modifier = Modifier.padding(top = 4.dp)) {
-                            Button(
-                                onClick = { onClickTeam2ScoreDecrease() },
-                                shape = MaterialTheme.shapes.small,
-                                modifier = Modifier
-                                    .size(width = 40.dp, height = 32.dp)
-                                    .padding(end = 4.dp),
-                                contentPadding = PaddingValues(2.dp)
-                            ) {
-                                Image(
-                                    painter = painterResource(id = R.drawable.baseline_remove_24),
-                                    contentDescription = null,
-                                    modifier = Modifier.size(32.dp),
-                                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary)
-                                )
-                            }
-
-                            Button(
-                                onClick = { onClickTeam2Scored() },
-                                shape = MaterialTheme.shapes.small,
-                                modifier = Modifier
-                                    .size(width = 40.dp, height = 32.dp)
-                                    .padding(start = 4.dp),
-                                contentPadding = PaddingValues(2.dp)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Add,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(32.dp)
-                                )
-                            }
+                Column(modifier = Modifier.size(width = 150.dp, height = 225.dp)) {
+                    Card(modifier = Modifier.fillMaxWidth()) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .fillMaxWidth()
+                        ) {
+                            Text(
+                                text = uiState.team2.pontos.toString(),
+                                fontSize = 64.sp
+                            )
+                            Text(
+                                text = uiState.team2.nome,
+                                fontSize = 24.sp,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.size(width = 125.dp, height = 64.dp)
+                            )
                         }
+                    }
+                    Row(
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Button(
+                            onClick = { onClickTeam2ScoreDecrease() },
+                            shape = MaterialTheme.shapes.small,
+                            modifier = Modifier
+                                .size(width = 50.dp, height = 40.dp)
+                                .padding(end = 4.dp),
+                            contentPadding = PaddingValues(2.dp)
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.baseline_remove_24),
+                                contentDescription = null,
+                                modifier = Modifier.size(32.dp),
+                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary)
+                            )
+                        }
+                        Button(
+                            onClick = { onClickTeam2Scored() },
+                            shape = MaterialTheme.shapes.small,
+                            modifier = Modifier
+                                .size(width = 50.dp, height = 40.dp)
+                                .padding(start = 4.dp),
+                            contentPadding = PaddingValues(2.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Add,
+                                contentDescription = null,
+                                modifier = Modifier.size(32.dp)
+                            )
+                        }
+
                     }
                 }
             }
@@ -339,7 +359,7 @@ fun MainScreen(
                     text = stringResource(id = R.string.txt_teams_in_queue),
                     fontSize = 24.sp
                 )
-                Button(onClick = { onClickClearQueue() }) {
+                Button(onClick = { onClickClearQueue() }, enabled = uiState.teamsInQueue.isNotEmpty()) {
                     Text(text = stringResource(id = R.string.btn_clear_queue))
                     Icon(
                         imageVector = Icons.Default.Delete,
@@ -348,31 +368,25 @@ fun MainScreen(
                 }
             }
 
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .verticalScroll(rememberScrollState())
-            ) {
-                HorizontalDivider()
-                uiState.teamsInQueue.forEachIndexed { index, team ->
+            LazyColumn {
+                items(uiState.teamsInQueue.size) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            text = "${index + 1} - ${team.nome}",
+                            text = "${it + 1} - ${uiState.teamsInQueue[it].nome}",
                             textAlign = TextAlign.Center,
                             fontSize = 28.sp
                         )
-                        Button(onClick = { onClickDeleteTeam(team) }) {
+                        Button(onClick = { onClickDeleteTeam(uiState.teamsInQueue[it])}) {
                             Icon(
                                 imageVector = Icons.Default.Delete,
                                 contentDescription = stringResource(id = R.string.txt_acss_btn_delete_team)
                             )
                         }
                     }
-                    HorizontalDivider()
                 }
             }
         }
