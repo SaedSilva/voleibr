@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+@Suppress("UNCHECKED_CAST")
 class MainViewModel(
     private val dataStoreHelper: DataStoreHelper,
     private val repository: TeamRepository
@@ -34,17 +35,17 @@ class MainViewModel(
                 dataStoreHelper.vaiA2Flow,
                 dataStoreHelper.vibrarFlow,
                 repository.queue
-            ) {
-                val maxPoints = it[0] as Int
-                val team1 = it[1] as String
-                val team1Points = it[2] as Int
-                val team2 = it[3] as String
-                val team2Points = it[4] as Int
+            ) { array ->
+                val maxPoints = array[0] as Int
+                val team1 = array[1] as String
+                val team1Points = array[2] as Int
+                val team2 = array[3] as String
+                val team2Points = array[4] as Int
 
-                val vaiA2 = it[5] as Boolean
-                val vibrar = it[6] as Boolean
+                val vaiA2 = array[5] as Boolean
+                val vibrar = array[6] as Boolean
 
-                val teamsInQueue = it[7] as List<TeamEntity>
+                val teamsInQueue = array[7] as List<TeamEntity>
 
                 MainScreenState(
                     maxPoints = maxPoints,
