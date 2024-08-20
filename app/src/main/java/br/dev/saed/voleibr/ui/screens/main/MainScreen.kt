@@ -10,10 +10,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
@@ -22,7 +20,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -43,6 +41,12 @@ import androidx.compose.ui.unit.sp
 import br.dev.saed.voleibr.R
 import br.dev.saed.voleibr.model.entities.Team
 import br.dev.saed.voleibr.ui.theme.VoleibrTheme
+import br.dev.saed.voleibr.ui.theme.onPrimaryContainerLight
+import br.dev.saed.voleibr.ui.theme.onSecondaryContainerLight
+import br.dev.saed.voleibr.ui.theme.onTertiaryContainerLight
+import br.dev.saed.voleibr.ui.theme.primaryContainerLight
+import br.dev.saed.voleibr.ui.theme.secondaryContainerLight
+import br.dev.saed.voleibr.ui.theme.tertiaryContainerLight
 
 @Composable
 fun MainScreen(
@@ -123,7 +127,15 @@ fun MainScreen(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column(modifier = Modifier.size(width = 150.dp, height = 225.dp)) {
-                    Card(modifier = Modifier.fillMaxWidth()) {
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = CardColors(
+                            containerColor = primaryContainerLight,
+                            contentColor = onPrimaryContainerLight,
+                            disabledContentColor = MaterialTheme.colorScheme.onPrimary,
+                            disabledContainerColor = MaterialTheme.colorScheme.primary
+                        )
+                    ) {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = Modifier
@@ -222,7 +234,15 @@ fun MainScreen(
                 }
 
                 Column(modifier = Modifier.size(width = 150.dp, height = 225.dp)) {
-                    Card(modifier = Modifier.fillMaxWidth()) {
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = CardColors(
+                            containerColor = tertiaryContainerLight,
+                            contentColor = onTertiaryContainerLight,
+                            disabledContentColor = MaterialTheme.colorScheme.onPrimary,
+                            disabledContainerColor = MaterialTheme.colorScheme.primary
+                        )
+                    ) {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = Modifier
@@ -359,7 +379,10 @@ fun MainScreen(
                     text = stringResource(id = R.string.txt_teams_in_queue),
                     fontSize = 24.sp
                 )
-                Button(onClick = { onClickClearQueue() }, enabled = uiState.teamsInQueue.isNotEmpty()) {
+                Button(
+                    onClick = { onClickClearQueue() },
+                    enabled = uiState.teamsInQueue.isNotEmpty()
+                ) {
                     Text(text = stringResource(id = R.string.btn_clear_queue))
                     Icon(
                         imageVector = Icons.Default.Delete,
@@ -380,7 +403,7 @@ fun MainScreen(
                             textAlign = TextAlign.Center,
                             fontSize = 28.sp
                         )
-                        Button(onClick = { onClickDeleteTeam(uiState.teamsInQueue[it])}) {
+                        Button(onClick = { onClickDeleteTeam(uiState.teamsInQueue[it]) }) {
                             Icon(
                                 imageVector = Icons.Default.Delete,
                                 contentDescription = stringResource(id = R.string.txt_acss_btn_delete_team)

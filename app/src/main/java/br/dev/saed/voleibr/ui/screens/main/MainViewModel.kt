@@ -8,6 +8,7 @@ import br.dev.saed.voleibr.model.repositories.db.TeamEntity
 import br.dev.saed.voleibr.model.repositories.db.TeamRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -23,26 +24,39 @@ class MainViewModel(
 
     init {
         viewModelScope.launch {
-            val maxPoints = dataStoreHelper.maxPointsFlow.first()
-            val team1 = dataStoreHelper.team1Flow.first()
-            val pointTeam1 = dataStoreHelper.team1PointsFlow.first()
-            val team2 = dataStoreHelper.team2Flow.first()
-            val pointTeam2 = dataStoreHelper.team2PointsFlow.first()
-            val vaiA2 = dataStoreHelper.vaiA2Flow.first()
-            val vibrar = dataStoreHelper.vibrarFlow.first()
-            val teams = repository.queue.first()
+            combine(
+                dataStoreHelper.maxPointsFlow,
+                dataStoreHelper.team1Flow,
+                dataStoreHelper.team1PointsFlow,
+                dataStoreHelper.team2Flow,
+                dataStoreHelper.team2PointsFlow,
+                dataStoreHelper.vaiA2Flow,
+                dataStoreHelper.vibrarFlow,
+                repository.queue
+            ) {
+                val maxPoints = it[0] as Int
+                val team1 = it[1] as String
+                val team1Points = it[2] as Int
+                val team2 = it[3] as String
+                val team2Points = it[4] as Int
 
-            _uiState.update {
-                it.copy(
+                val vaiA2 = it[5] as Boolean
+                val vibrar = it[6] as Boolean
+
+                val teamsInQueue = it[7] as List<TeamEntity>
+
+                MainScreenState(
                     maxPoints = maxPoints,
-                    team1 = Team(nome = team1, pontos = pointTeam1),
-                    team2 = Team(nome = team2, pontos = pointTeam2),
+                    team1 = Team(nome = team1, pontos = team1Points),
+                    team2 = Team(nome = team2, pontos = team2Points),
                     vaiA2 = vaiA2,
                     vibrar = vibrar,
-                    teamsInQueue = teams.map { team ->
-                        Team(id = team.id, nome = team.name)
+                    teamsInQueue = teamsInQueue.map { team ->
+                        Team(team.id, team.name)
                     }
                 )
+            }.collect {
+                _uiState.value = it
             }
         }
     }
@@ -50,92 +64,62 @@ class MainViewModel(
     fun onEvent(event: MainScreenEvent) {
         when (event) {
             is MainScreenEvent.Team1Scored -> {
-                _uiState.update {
-                    it.copy(team1 = it.team1.copy(pontos = it.team1.pontos + 1))
-                }
-                testWinner()
                 viewModelScope.launch {
-                    dataStoreHelper.savePointsTeam1(_uiState.value.team1.pontos)
+                    dataStoreHelper.savePointsTeam1(_uiState.value.team1.pontos + 1)
+                    testWinner()
                 }
             }
 
             is MainScreenEvent.Team1ScoreDecreased -> {
                 if (_uiState.value.team1.pontos > 0) {
-                    _uiState.update {
-                        it.copy(team1 = it.team1.copy(pontos = it.team1.pontos - 1))
-                    }
                     viewModelScope.launch {
-                        dataStoreHelper.savePointsTeam1(_uiState.value.team1.pontos)
+                        dataStoreHelper.savePointsTeam1(_uiState.value.team1.pontos - 1)
                     }
                 }
             }
 
             is MainScreenEvent.Team2Scored -> {
-                _uiState.update {
-                    it.copy(team2 = it.team2.copy(pontos = it.team2.pontos + 1))
-                }
-                testWinner()
                 viewModelScope.launch {
-                    dataStoreHelper.savePointsTeam2(_uiState.value.team2.pontos)
+                    dataStoreHelper.savePointsTeam2(_uiState.value.team2.pontos + 1)
+                    testWinner()
                 }
             }
 
             is MainScreenEvent.Team2ScoreDecreased -> {
                 if (_uiState.value.team2.pontos > 0) {
-                    _uiState.update {
-                        it.copy(team2 = it.team2.copy(pontos = it.team2.pontos - 1))
-                    }
                     viewModelScope.launch {
-                        dataStoreHelper.savePointsTeam2(_uiState.value.team2.pontos)
+                        dataStoreHelper.savePointsTeam2(_uiState.value.team2.pontos - 1)
                     }
                 }
             }
 
             is MainScreenEvent.DecreaseMaxPoints -> {
-                _uiState.update {
-                    if (it.maxPoints > 1) {
-                        it.copy(maxPoints = it.maxPoints - 1)
-                    } else {
-                        it
+                if (_uiState.value.maxPoints > 1) {
+                    viewModelScope.launch {
+                        dataStoreHelper.saveMaxPoints(_uiState.value.maxPoints - 1)
                     }
                 }
-                viewModelScope.launch {
-                    dataStoreHelper.saveMaxPoints(_uiState.value.maxPoints)
-                }
-
             }
 
             is MainScreenEvent.IncreaseMaxPoints -> {
-                _uiState.update {
-                    if (it.maxPoints < 99) {
-                        it.copy(maxPoints = it.maxPoints + 1)
-                    } else {
-                        it
+                if (_uiState.value.maxPoints < 99) {
+                    viewModelScope.launch {
+                        dataStoreHelper.saveMaxPoints(_uiState.value.maxPoints + 1)
                     }
-                }
-                viewModelScope.launch {
-                    dataStoreHelper.saveMaxPoints(_uiState.value.maxPoints)
                 }
             }
 
             is MainScreenEvent.ChangeTeams -> switchTeams()
 
             is MainScreenEvent.SwitchVaiA2 -> {
-                _uiState.update {
-                    it.copy(vaiA2 = !it.vaiA2)
-                }
                 viewModelScope.launch {
-                    dataStoreHelper.saveVaiA2(_uiState.value.vaiA2)
+                    dataStoreHelper.saveVaiA2(!_uiState.value.vaiA2)
                 }
             }
 
             is MainScreenEvent.SwitchVibrar -> {
-                _uiState.update {
-                    it.copy(vibrar = !it.vibrar)
-                }
-
                 viewModelScope.launch {
-                    dataStoreHelper.saveVibrar(_uiState.value.vibrar)
+                    dataStoreHelper.saveVibrar(!_uiState.value.vibrar)
                 }
             }
 
@@ -143,21 +127,12 @@ class MainViewModel(
                 viewModelScope.launch {
                     repository.removeAllTeams()
                 }
-                _uiState.update {
-                    it.copy(teamsInQueue = emptyList())
-                }
             }
 
             is MainScreenEvent.ClickedAddTeam -> {
                 if (_uiState.value.teamToAdd.nome.isNotBlank()) {
                     viewModelScope.launch {
                         repository.addTeam(TeamEntity(0, _uiState.value.teamToAdd.nome))
-                        val teams = repository.queue.first()
-                        _uiState.update {
-                            it.copy(teamsInQueue = teams.map { team ->
-                                Team(team.id, team.name)
-                            })
-                        }
                     }
                 }
             }
@@ -165,19 +140,10 @@ class MainViewModel(
             is MainScreenEvent.ClickedDeleteTeam -> {
                 viewModelScope.launch {
                     repository.removeTeam(TeamEntity(event.team.id, event.team.nome))
-                    val teams = repository.queue.first()
-                    _uiState.update {
-                        it.copy(teamsInQueue = teams.map { team ->
-                            Team(team.id, team.name)
-                        })
-                    }
                 }
             }
 
             is MainScreenEvent.ResetPoints -> {
-                _uiState.update {
-                    it.copy(team1 = it.team1.copy(pontos = 0), team2 = it.team2.copy(pontos = 0))
-                }
                 viewModelScope.launch {
                     dataStoreHelper.savePointsTeam1(0)
                     dataStoreHelper.savePointsTeam2(0)
@@ -205,10 +171,10 @@ class MainViewModel(
     private fun testWinner() {
         val winner = _uiState.value.testarGanhador()
         if (winner != null) {
-            _uiState.update {
-                it.copy(team1 = it.team1.copy(pontos = 0), team2 = it.team2.copy(pontos = 0))
-            }
             viewModelScope.launch {
+                dataStoreHelper.savePointsTeam1(0)
+                dataStoreHelper.savePointsTeam2(0)
+
                 val queue = repository.queue.first()
                 if (queue.isNotEmpty()) {
                     val loser =
@@ -231,17 +197,6 @@ class MainViewModel(
                 dataStoreHelper.saveTeam2(teamToDataStore.name)
             }
             repository.removeFirstTeam()
-            val teams = repository.queue.first()
-
-            _uiState.update {
-                it.copy(
-                    team1 = Team(nome = dataStoreHelper.team1Flow.first(), pontos = 0),
-                    team2 = Team(nome = dataStoreHelper.team2Flow.first(), pontos = 0),
-                    teamsInQueue = teams.map { team ->
-                        Team(team.id, team.name)
-                    }
-                )
-            }
         }
     }
 
@@ -251,12 +206,6 @@ class MainViewModel(
             val team2 = dataStoreHelper.team2Flow.first()
             dataStoreHelper.saveTeam1(team2)
             dataStoreHelper.saveTeam2(team1)
-            _uiState.update {
-                it.copy(
-                    team1 = Team(nome = team2, pontos = it.team2.pontos),
-                    team2 = Team(nome = team1, pontos = it.team1.pontos)
-                )
-            }
         }
     }
 }
