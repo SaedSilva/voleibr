@@ -10,7 +10,10 @@
     <string name="btn_reset_points">Reiniciar Pontuação</string>
     <string name="btn_clear_queue">Limpar Fila</string>
 
+    <string name="btn_remove">Remover</string>
+
     <string name="txt_acss_btn_decrease_max_points">Diminuir pontos máximos</string>
+    <string name="txt_acss_btn_decrease_team_points">Diminuir pontos máximos</string>
     <string name="txt_acss_btn_increase_max_points">Aumentar pontos máximos</string>
 
     <string name="txt_acss_btn_score_team_1">Pontuar time esquerda</string>

@@ -56,6 +56,8 @@ sealed class MainScreenEvent {
     data object Team2ScoreDecreased : MainScreenEvent()
     data object DecreaseMaxPoints : MainScreenEvent()
     data object IncreaseMaxPoints : MainScreenEvent()
+    data object RemoveTeam1: MainScreenEvent()
+    data object RemoveTeam2: MainScreenEvent()
     data object ChangeTeams : MainScreenEvent()
     data object SwitchVaiA2 : MainScreenEvent()
     data object SwitchVibrar : MainScreenEvent()

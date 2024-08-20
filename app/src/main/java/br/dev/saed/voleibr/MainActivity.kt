@@ -67,18 +67,14 @@ private fun App(
                     context.vibrator(1010)
                 }
             },
-            onClickTeam1ScoreDecrease = {
-                viewModel.onEvent(MainScreenEvent.Team1ScoreDecreased)
-            },
+            onClickTeam1ScoreDecrease = { viewModel.onEvent(MainScreenEvent.Team1ScoreDecreased) },
             onClickTeam2Scored = {
                 viewModel.onEvent(MainScreenEvent.Team2Scored)
                 if (viewModel.uiState.value.vibrar) {
                     context.vibrator(1010)
                 }
             },
-            onClickTeam2ScoreDecrease = {
-                viewModel.onEvent(MainScreenEvent.Team2ScoreDecreased)
-            },
+            onClickTeam2ScoreDecrease = { viewModel.onEvent(MainScreenEvent.Team2ScoreDecreased) },
             onClickChangeTeams = { viewModel.onEvent(MainScreenEvent.ChangeTeams) },
             onClickSwitchVaiA2 = { viewModel.onEvent(MainScreenEvent.SwitchVaiA2) },
             onClickSwitchVibrar = { viewModel.onEvent(MainScreenEvent.SwitchVibrar) },
@@ -86,7 +82,9 @@ private fun App(
             onAddTeamNameChanged = { viewModel.onEvent(MainScreenEvent.OnAddTeamNameChanged(it)) },
             onClickAddTeam = { viewModel.onEvent(MainScreenEvent.ClickedAddTeam) },
             onClickDeleteTeam = { viewModel.onEvent(MainScreenEvent.ClickedDeleteTeam(it)) },
-            onClickResetPoints = { viewModel.onEvent(MainScreenEvent.ResetPoints) }
+            onClickResetPoints = { viewModel.onEvent(MainScreenEvent.ResetPoints) },
+            onClickRemoveTeam1 = { viewModel.onEvent(MainScreenEvent.RemoveTeam1) },
+            onClickRemoveTeam2 = { viewModel.onEvent(MainScreenEvent.RemoveTeam2) }
         )
     }
 }

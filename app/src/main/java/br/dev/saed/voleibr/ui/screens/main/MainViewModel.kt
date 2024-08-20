@@ -110,6 +110,26 @@ class MainViewModel(
                 }
             }
 
+            is MainScreenEvent.RemoveTeam1 -> {
+                viewModelScope.launch {
+                    val teamToDataStore = _uiState.value.teamsInQueue.first()
+                    repository.removeFirstTeam()
+
+                    dataStoreHelper.saveTeam1(teamToDataStore.nome)
+                    dataStoreHelper.savePointsTeam1(teamToDataStore.pontos)
+                }
+            }
+
+            is MainScreenEvent.RemoveTeam2 -> {
+                viewModelScope.launch {
+                    val teamToDataStore = _uiState.value.teamsInQueue.first()
+                    repository.removeFirstTeam()
+
+                    dataStoreHelper.saveTeam2(teamToDataStore.nome)
+                    dataStoreHelper.savePointsTeam2(teamToDataStore.pontos)
+                }
+            }
+
             is MainScreenEvent.ChangeTeams -> switchTeams()
 
             is MainScreenEvent.SwitchVaiA2 -> {
@@ -169,6 +189,7 @@ class MainViewModel(
         }
     }
 
+
     private fun testWinner() {
         val winner = _uiState.value.testarGanhador()
         if (winner != null) {
@@ -196,13 +217,13 @@ class MainViewModel(
     private fun rotateTeams(loser: Team) {
         viewModelScope.launch {
             repository.addTeam(TeamEntity(loser.id, loser.nome))
-            val teamToDataStore = repository.queue.first().first()
+            val teamToDataStore = _uiState.value.teamsInQueue.first()
             repository.removeFirstTeam()
 
             if (dataStoreHelper.team1Flow.first() == loser.nome) {
-                dataStoreHelper.saveTeam1(teamToDataStore.name)
+                dataStoreHelper.saveTeam1(teamToDataStore.nome)
             } else {
-                dataStoreHelper.saveTeam2(teamToDataStore.name)
+                dataStoreHelper.saveTeam2(teamToDataStore.nome)
             }
         }
     }

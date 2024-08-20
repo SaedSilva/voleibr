@@ -53,6 +53,8 @@ fun MainScreen(
     uiState: MainScreenState,
     onClickDecreaseMaxPoints: () -> Unit = {},
     onClickIncreaseMaxPoints: () -> Unit = {},
+    onClickRemoveTeam1: () -> Unit = {},
+    onClickRemoveTeam2: () -> Unit = {},
     onClickChangeTeams: () -> Unit = {},
     onClickTeam1Scored: () -> Unit = {},
     onClickTeam1ScoreDecrease: () -> Unit = {},
@@ -78,11 +80,7 @@ fun MainScreen(
 //        }
     ) { innerPadding ->
         if (uiState.winner != null) {
-            WinnerDialog(
-                winner = uiState.winner
-            ) {
-
-            }
+            WinnerDialog(winner = uiState.winner)
         }
 
         Column(
@@ -132,7 +130,20 @@ fun MainScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Column(modifier = Modifier.size(width = 150.dp, height = 225.dp)) {
+                Column(modifier = Modifier.size(width = 150.dp, height = 260.dp)) {
+                    Button(
+                        modifier = Modifier.fillMaxWidth(),
+                        enabled = uiState.teamsInQueue.isNotEmpty(),
+                        shape = MaterialTheme.shapes.small,
+                        onClick = { onClickRemoveTeam1() }
+                    ) {
+                        Text(text = stringResource(id = R.string.btn_remove))
+                        Icon(
+                            imageVector = Icons.Default.Delete, contentDescription = stringResource(
+                                id = R.string.btn_remove
+                            )
+                        )
+                    }
                     Card(
                         modifier = Modifier.fillMaxWidth(),
                         colors = CardColors(
@@ -177,7 +188,7 @@ fun MainScreen(
                         ) {
                             Image(
                                 painter = painterResource(id = R.drawable.baseline_remove_24),
-                                contentDescription = null,
+                                contentDescription = stringResource(id = R.string.txt_acss_btn_decrease_team_points),
                                 modifier = Modifier.size(32.dp),
                                 colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary)
                             )
@@ -192,7 +203,7 @@ fun MainScreen(
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Add,
-                                contentDescription = null,
+                                contentDescription = stringResource(id = R.string.txt_acss_btn_score_team_1),
                                 modifier = Modifier.size(32.dp)
                             )
                         }
@@ -201,13 +212,11 @@ fun MainScreen(
 
                 Column(
                     modifier = Modifier.size(width = 40.dp, height = 225.dp),
-                    verticalArrangement = Arrangement.Top,
+                    verticalArrangement = Arrangement.Center,
                 ) {
                     Button(
                         onClick = { onClickResetPoints() },
-                        modifier = Modifier
-                            .size(width = 40.dp, height = 40.dp),
-                        contentPadding = PaddingValues(2.dp),
+                        contentPadding = PaddingValues(0.dp),
                         shape = MaterialTheme.shapes.small
                     ) {
                         Icon(
@@ -218,10 +227,7 @@ fun MainScreen(
                     }
                     Button(
                         onClick = { onClickChangeTeams() },
-                        modifier = Modifier
-                            .padding(top = 8.dp)
-                            .size(width = 40.dp, height = 40.dp),
-                        contentPadding = PaddingValues(2.dp),
+                        contentPadding = PaddingValues(0.dp),
                         shape = MaterialTheme.shapes.small
                     ) {
                         Column {
@@ -239,7 +245,20 @@ fun MainScreen(
                     }
                 }
 
-                Column(modifier = Modifier.size(width = 150.dp, height = 225.dp)) {
+                Column(modifier = Modifier.size(width = 150.dp, height = 260.dp)) {
+                    Button(
+                        modifier = Modifier.fillMaxWidth(),
+                        enabled = uiState.teamsInQueue.isNotEmpty(),
+                        shape = MaterialTheme.shapes.small,
+                        onClick = { onClickRemoveTeam2() }
+                    ) {
+                        Text(text = stringResource(id = R.string.btn_remove))
+                        Icon(
+                            imageVector = Icons.Default.Delete, contentDescription = stringResource(
+                                id = R.string.btn_remove
+                            )
+                        )
+                    }
                     Card(
                         modifier = Modifier.fillMaxWidth(),
                         colors = CardColors(
@@ -284,7 +303,7 @@ fun MainScreen(
                         ) {
                             Image(
                                 painter = painterResource(id = R.drawable.baseline_remove_24),
-                                contentDescription = null,
+                                contentDescription = stringResource(id = R.string.txt_acss_btn_decrease_team_points),
                                 modifier = Modifier.size(32.dp),
                                 colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary)
                             )
@@ -299,7 +318,7 @@ fun MainScreen(
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Add,
-                                contentDescription = null,
+                                contentDescription = stringResource(id = R.string.txt_acss_btn_score_team_2),
                                 modifier = Modifier.size(32.dp)
                             )
                         }
