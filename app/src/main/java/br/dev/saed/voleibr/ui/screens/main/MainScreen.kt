@@ -38,14 +38,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import br.dev.saed.voleibr.R
 import br.dev.saed.voleibr.model.entities.Team
 import br.dev.saed.voleibr.ui.theme.VoleibrTheme
 import br.dev.saed.voleibr.ui.theme.onPrimaryContainerLight
-import br.dev.saed.voleibr.ui.theme.onSecondaryContainerLight
 import br.dev.saed.voleibr.ui.theme.onTertiaryContainerLight
 import br.dev.saed.voleibr.ui.theme.primaryContainerLight
-import br.dev.saed.voleibr.ui.theme.secondaryContainerLight
 import br.dev.saed.voleibr.ui.theme.tertiaryContainerLight
 
 @Composable
@@ -78,6 +77,14 @@ fun MainScreen(
 //            }
 //        }
     ) { innerPadding ->
+        if (uiState.winner != null) {
+            WinnerDialog(
+                winner = uiState.winner
+            ) {
+
+            }
+        }
+
         Column(
             modifier = modifier
                 .fillMaxSize()
@@ -99,8 +106,7 @@ fun MainScreen(
                 }
 
                 Column(
-                    modifier = Modifier
-                        .padding(16.dp),
+                    modifier = Modifier.padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
@@ -414,6 +420,44 @@ fun MainScreen(
             }
         }
 
+    }
+}
+
+@Composable
+fun WinnerDialog(
+    modifier: Modifier = Modifier,
+    winner: Team,
+    onDismissRequest: () -> Unit = {}
+) {
+    Dialog(onDismissRequest = { onDismissRequest() }) {
+        Card(modifier = modifier.size(200.dp)) {
+            Column(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "Ganhador: ",
+                    fontSize = 24.sp,
+                    textAlign = TextAlign.Center
+                )
+                Text(
+                    text = winner.nome,
+                    fontSize = 32.sp,
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun WinnerDialogPreview() {
+    VoleibrTheme {
+        WinnerDialog(winner = Team(0, "Time 1", 0))
     }
 }
 

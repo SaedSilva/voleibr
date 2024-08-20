@@ -9,7 +9,8 @@ data class MainScreenState(
     val teamsInQueue: List<Team> = ArrayDeque(),
     val vaiA2: Boolean = true,
     val vibrar: Boolean = true,
-    val teamToAdd: Team = Team()
+    val teamToAdd: Team = Team(),
+    val winner: Team? = null
 ) {
 
     fun testarGanhador(): Team? {

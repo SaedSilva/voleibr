@@ -6,6 +6,7 @@ import br.dev.saed.voleibr.model.entities.Team
 import br.dev.saed.voleibr.model.repositories.datastore.DataStoreHelper
 import br.dev.saed.voleibr.model.repositories.db.TeamEntity
 import br.dev.saed.voleibr.model.repositories.db.TeamRepository
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
@@ -175,8 +176,15 @@ class MainViewModel(
                 dataStoreHelper.savePointsTeam1(0)
                 dataStoreHelper.savePointsTeam2(0)
 
-                val queue = repository.queue.first()
-                if (queue.isNotEmpty()) {
+                _uiState.update {
+                    it.copy(winner = winner)
+                }
+                delay(2000)
+                _uiState.update {
+                    it.copy(winner = null)
+                }
+
+                if (_uiState.value.teamsInQueue.isNotEmpty()) {
                     val loser =
                         if (winner == _uiState.value.team1) _uiState.value.team2 else _uiState.value.team1
                     rotateTeams(loser)
@@ -188,15 +196,14 @@ class MainViewModel(
     private fun rotateTeams(loser: Team) {
         viewModelScope.launch {
             repository.addTeam(TeamEntity(loser.id, loser.nome))
-
             val teamToDataStore = repository.queue.first().first()
+            repository.removeFirstTeam()
 
             if (dataStoreHelper.team1Flow.first() == loser.nome) {
                 dataStoreHelper.saveTeam1(teamToDataStore.name)
             } else {
                 dataStoreHelper.saveTeam2(teamToDataStore.name)
             }
-            repository.removeFirstTeam()
         }
     }
 
