@@ -171,24 +171,11 @@ class MainViewModel(
                 }
             }
 
-            is MainScreenEvent.OnMaxPointsChanged -> _uiState.update {
-                it.copy(maxPoints = event.maxPoints)
-            }
-
-            is MainScreenEvent.OnTeam1NameChanged -> _uiState.update {
-                it.copy(team1 = it.team1.copy(nome = event.name))
-            }
-
-            is MainScreenEvent.OnTeam2NameChanged -> _uiState.update {
-                it.copy(team2 = it.team2.copy(nome = event.name))
-            }
-
             is MainScreenEvent.OnAddTeamNameChanged -> _uiState.update {
                 it.copy(teamToAdd = it.teamToAdd.copy(nome = event.team))
             }
         }
     }
-
 
     private fun testWinner() {
         val winner = _uiState.value.testarGanhador()
@@ -238,7 +225,6 @@ class MainViewModel(
 
             dataStoreHelper.saveTeam2(team1.nome)
             dataStoreHelper.savePointsTeam2(team1.pontos)
-
         }
     }
 }

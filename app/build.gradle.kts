@@ -62,7 +62,7 @@ dependencies {
 
     implementation(libs.androidx.room.runtime)
     annotationProcessor(libs.androidx.room.compiler)
-    ksp("androidx.room:room-compiler:2.6.1")
+    ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
 
     implementation(libs.androidx.datastore.preferences)
@@ -76,7 +76,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
 
     implementation(libs.androidx.material3)
-    runtimeOnly("androidx.compose.material:material-icons-extended:1.6.8")
+    runtimeOnly(libs.androidx.material.icons.extended)
 
 
     testImplementation(libs.junit)

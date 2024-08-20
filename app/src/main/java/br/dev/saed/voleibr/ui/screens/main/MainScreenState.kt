@@ -65,8 +65,5 @@ sealed class MainScreenEvent {
     data object ClickedAddTeam : MainScreenEvent()
     data object ResetPoints : MainScreenEvent()
     data class ClickedDeleteTeam(val team: Team) : MainScreenEvent()
-    data class OnMaxPointsChanged(val maxPoints: Int) : MainScreenEvent()
-    data class OnTeam1NameChanged(val name: String) : MainScreenEvent()
-    data class OnTeam2NameChanged(val name: String) : MainScreenEvent()
     data class OnAddTeamNameChanged(val team: String) : MainScreenEvent()
 }
