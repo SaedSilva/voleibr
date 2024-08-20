@@ -202,10 +202,15 @@ class MainViewModel(
 
     private fun switchTeams() {
         viewModelScope.launch {
-            val team1 = dataStoreHelper.team1Flow.first()
-            val team2 = dataStoreHelper.team2Flow.first()
-            dataStoreHelper.saveTeam1(team2)
-            dataStoreHelper.saveTeam2(team1)
+            val team1 = _uiState.value.team1
+            val team2 = _uiState.value.team2
+
+            dataStoreHelper.saveTeam1(team2.nome)
+            dataStoreHelper.savePointsTeam1(team2.pontos)
+
+            dataStoreHelper.saveTeam2(team1.nome)
+            dataStoreHelper.savePointsTeam2(team1.pontos)
+
         }
     }
 }
