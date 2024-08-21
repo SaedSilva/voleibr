@@ -6,6 +6,7 @@ import br.dev.saed.voleibr.model.entities.Team
 import br.dev.saed.voleibr.model.repositories.datastore.DataStoreHelper
 import br.dev.saed.voleibr.model.repositories.db.TeamEntity
 import br.dev.saed.voleibr.model.repositories.db.TeamRepository
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -25,42 +26,45 @@ class MainViewModel(
 
     init {
         viewModelScope.launch {
-            combine(
-                dataStoreHelper.team1Flow,
-                dataStoreHelper.team2Flow,
-                dataStoreHelper.team1PointsFlow,
-                dataStoreHelper.team2PointsFlow,
-                dataStoreHelper.maxPointsFlow
-            ) { team1, team2, team1Points, team2Points, maxPoints ->
-                MainScreenState(
-                    team1 = Team(0, team1, team1Points),
-                    team2 = Team(0, team2, team2Points),
-                    maxPoints = maxPoints
-                )
-            }.combine(
+            val combinedFlow = async {
                 combine(
-                    dataStoreHelper.vaiA2Flow,
-                    dataStoreHelper.vibrarFlow,
-                    repository.queue
-                ) { vaia2, vibrar, queue ->
+                    dataStoreHelper.team1Flow,
+                    dataStoreHelper.team2Flow,
+                    dataStoreHelper.team1PointsFlow,
+                    dataStoreHelper.team2PointsFlow,
+                    dataStoreHelper.maxPointsFlow
+                ) { team1, team2, team1Points, team2Points, maxPoints ->
                     MainScreenState(
-                        vaiA2 = vaia2,
-                        vibrar = vibrar,
-                        teamsInQueue = queue.map {
-                            Team(it.id, it.name)
-                        }
+                        team1 = Team(0, team1, team1Points),
+                        team2 = Team(0, team2, team2Points),
+                        maxPoints = maxPoints
+                    )
+                }.combine(
+                    combine(
+                        dataStoreHelper.vaiA2Flow,
+                        dataStoreHelper.vibrarFlow,
+                        repository.queue
+                    ) { vaia2, vibrar, queue ->
+                        MainScreenState(
+                            vaiA2 = vaia2,
+                            vibrar = vibrar,
+                            teamsInQueue = queue.map {
+                                Team(it.id, it.name)
+                            }
+                        )
+                    }
+                ) { part1, part2 ->
+                    MainScreenState(
+                        maxPoints = part1.maxPoints,
+                        team1 = part1.team1,
+                        team2 = part1.team2,
+                        vaiA2 = part2.vaiA2,
+                        vibrar = part2.vibrar,
+                        teamsInQueue = part2.teamsInQueue
                     )
                 }
-            ) { part1, part2 ->
-                MainScreenState(
-                    maxPoints = part1.maxPoints,
-                    team1 = part1.team1,
-                    team2 = part1.team2,
-                    vaiA2 = part2.vaiA2,
-                    vibrar = part2.vibrar,
-                    teamsInQueue = part2.teamsInQueue
-                )
-            }.collect {newState ->
+            }
+            combinedFlow.await().collect {newState ->
                 _uiState.update {
                     it.copy(
                         maxPoints = newState.maxPoints,
@@ -195,6 +199,12 @@ class MainViewModel(
         val winner = _uiState.value.testarGanhador()
         if (winner != null) {
             viewModelScope.launch {
+                if (_uiState.value.teamsInQueue.isNotEmpty()) {
+                    val loser =
+                        if (winner == _uiState.value.team1) _uiState.value.team2 else _uiState.value.team1
+                    rotateTeams(loser)
+                }
+
                 dataStoreHelper.savePointsTeam1(0)
                 dataStoreHelper.savePointsTeam2(0)
 
@@ -206,11 +216,7 @@ class MainViewModel(
                     it.copy(winner = null)
                 }
 
-                if (_uiState.value.teamsInQueue.isNotEmpty()) {
-                    val loser =
-                        if (winner == _uiState.value.team1) _uiState.value.team2 else _uiState.value.team1
-                    rotateTeams(loser)
-                }
+
             }
         }
     }
