@@ -27,41 +27,55 @@ class MainViewModel(
     init {
         viewModelScope.launch {
             combine(
-                dataStoreHelper.maxPointsFlow,
                 dataStoreHelper.team1Flow,
-                dataStoreHelper.team1PointsFlow,
                 dataStoreHelper.team2Flow,
+                dataStoreHelper.team1PointsFlow,
                 dataStoreHelper.team2PointsFlow,
-                dataStoreHelper.vaiA2Flow,
-                dataStoreHelper.vibrarFlow,
-                repository.queue
-            ) { array ->
-                val maxPoints = array[0] as Int
-                val team1 = array[1] as String
-                val team1Points = array[2] as Int
-                val team2 = array[3] as String
-                val team2Points = array[4] as Int
-
-                val vaiA2 = array[5] as Boolean
-                val vibrar = array[6] as Boolean
-
-                val teamsInQueue = array[7] as List<TeamEntity>
-
+                dataStoreHelper.maxPointsFlow
+            ) { team1, team2, team1Points, team2Points, maxPoints ->
                 MainScreenState(
-                    maxPoints = maxPoints,
-                    team1 = Team(nome = team1, pontos = team1Points),
-                    team2 = Team(nome = team2, pontos = team2Points),
-                    vaiA2 = vaiA2,
-                    vibrar = vibrar,
-                    teamsInQueue = teamsInQueue.map { team ->
-                        Team(team.id, team.name)
-                    }
+                    team1 = Team(0, team1, team1Points),
+                    team2 = Team(0, team2, team2Points),
+                    maxPoints = maxPoints
                 )
-            }.collect {
-                _uiState.value = it
+            }.combine(
+                combine(
+                    dataStoreHelper.vaiA2Flow,
+                    dataStoreHelper.vibrarFlow,
+                    repository.queue
+                ) { vaia2, vibrar, queue ->
+                    MainScreenState(
+                        vaiA2 = vaia2,
+                        vibrar = vibrar,
+                        teamsInQueue = queue.map {
+                            Team(it.id, it.name)
+                        }
+                    )
+                }
+            ) { part1, part2 ->
+                MainScreenState(
+                    maxPoints = part1.maxPoints,
+                    team1 = part1.team1,
+                    team2 = part1.team2,
+                    vaiA2 = part2.vaiA2,
+                    vibrar = part2.vibrar,
+                    teamsInQueue = part2.teamsInQueue
+                )
+            }.collect {newState ->
+                _uiState.update {
+                    it.copy(
+                        maxPoints = newState.maxPoints,
+                        team1 = newState.team1,
+                        team2 = newState.team2,
+                        vaiA2 = newState.vaiA2,
+                        vibrar = newState.vibrar,
+                        teamsInQueue = newState.teamsInQueue
+                    )
+                }
             }
         }
     }
+
 
     fun onEvent(event: MainScreenEvent) {
         when (event) {
