@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-@Suppress("UNCHECKED_CAST")
 class MainViewModel(
     private val dataStoreHelper: DataStoreHelper,
     private val repository: TeamRepository
