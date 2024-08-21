@@ -207,8 +207,6 @@ class MainViewModel(
                 _uiState.update {
                     it.copy(winner = null)
                 }
-
-
             }
         }
     }
