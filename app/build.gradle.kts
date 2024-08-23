@@ -14,8 +14,8 @@ android {
         applicationId = "br.dev.saed.voleibr"
         minSdk = 24
         targetSdk = 34
-        versionCode = 2
-        versionName = "1.1"
+        versionCode = 3
+        versionName = "1.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -77,6 +77,7 @@ dependencies {
 
     implementation(libs.androidx.material3)
     runtimeOnly(libs.androidx.material.icons.extended)
+    implementation(libs.androidx.ui.text.google.fonts)
 
 
     testImplementation(libs.junit)

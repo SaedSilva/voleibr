@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import br.dev.saed.voleibr.R
 import br.dev.saed.voleibr.model.entities.Team
+import br.dev.saed.voleibr.ui.theme.OrbitronFamily
 import br.dev.saed.voleibr.ui.theme.VoleibrTheme
 import br.dev.saed.voleibr.ui.theme.onPrimaryContainerLight
 import br.dev.saed.voleibr.ui.theme.onTertiaryContainerLight
@@ -114,7 +115,8 @@ fun MainScreen(
                     )
                     Text(
                         text = uiState.maxPoints.toString(),
-                        fontSize = 28.sp
+                        fontSize = 28.sp,
+                        fontFamily = OrbitronFamily
                     )
                 }
 
@@ -161,7 +163,8 @@ fun MainScreen(
                         ) {
                             Text(
                                 text = uiState.team1.pontos.toString(),
-                                fontSize = 64.sp
+                                fontSize = 64.sp,
+                                fontFamily = OrbitronFamily
                             )
                             Text(
                                 text = uiState.team1.nome,
@@ -276,7 +279,8 @@ fun MainScreen(
                         ) {
                             Text(
                                 text = uiState.team2.pontos.toString(),
-                                fontSize = 64.sp
+                                fontSize = 64.sp,
+                                fontFamily = OrbitronFamily
                             )
                             Text(
                                 text = uiState.team2.nome,
@@ -332,7 +336,8 @@ fun MainScreen(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Row(
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(8.dp)
                 ) {
                     Switch(
                         checked = uiState.vaiA2,
@@ -344,7 +349,8 @@ fun MainScreen(
                     )
                 }
                 Row(
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(8.dp)
                 ) {
                     Text(
                         text = stringResource(id = R.string.txt_vibrar),
@@ -362,7 +368,7 @@ fun MainScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 16.dp),
+                    .padding(top = 8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceEvenly
             ) {
@@ -371,7 +377,9 @@ fun MainScreen(
                     onValueChange = { onAddTeamNameChanged(it) },
                     singleLine = true,
                     label = { Text(text = stringResource(id = R.string.edit_team_name)) },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Go),
                     keyboardActions = KeyboardActions {
                         onClickAddTeam()
@@ -384,7 +392,9 @@ fun MainScreen(
                         onClickAddTeam()
                         onAddTeamNameChanged("")
                     },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 8.dp, end = 8.dp)
                 ) {
                     Text(
                         text = stringResource(id = R.string.txt_add_queue),
