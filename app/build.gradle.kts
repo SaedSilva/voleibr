@@ -4,6 +4,8 @@ plugins {
     alias(libs.plugins.compose.compiler)
     id("androidx.room")
     id("com.google.devtools.ksp")
+
+    kotlin("plugin.serialization") version "2.0.10"
 }
 
 android {
@@ -59,6 +61,10 @@ dependencies {
 
     implementation(libs.koin.androidx.compose)
     implementation(libs.koin.android)
+
+    implementation(libs.androidx.navigation.compose)
+
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")
 
     implementation(libs.androidx.room.runtime)
     annotationProcessor(libs.androidx.room.compiler)

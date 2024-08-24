@@ -1,4 +1,4 @@
-package br.dev.saed.voleibr.ui.screens.main
+package br.dev.saed.voleibr.ui.state
 
 import br.dev.saed.voleibr.model.entities.Team
 

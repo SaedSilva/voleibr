@@ -1,4 +1,4 @@
-package br.dev.saed.voleibr.ui.screens.main
+package br.dev.saed.voleibr.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -6,6 +6,8 @@ import br.dev.saed.voleibr.model.entities.Team
 import br.dev.saed.voleibr.model.repositories.datastore.DataStoreHelper
 import br.dev.saed.voleibr.model.repositories.db.TeamEntity
 import br.dev.saed.voleibr.model.repositories.db.TeamRepository
+import br.dev.saed.voleibr.ui.state.MainScreenEvent
+import br.dev.saed.voleibr.ui.state.MainScreenState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,7 +23,6 @@ class MainViewModel(
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MainScreenState())
-
     val uiState = _uiState.asStateFlow()
 
     init {

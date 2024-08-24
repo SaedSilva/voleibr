@@ -1,4 +1,4 @@
-package br.dev.saed.voleibr.ui.screens.main
+package br.dev.saed.voleibr.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -12,10 +12,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
@@ -47,6 +45,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import br.dev.saed.voleibr.R
 import br.dev.saed.voleibr.model.entities.Team
+import br.dev.saed.voleibr.ui.state.MainScreenState
 import br.dev.saed.voleibr.ui.theme.OrbitronFamily
 import br.dev.saed.voleibr.ui.theme.VoleibrTheme
 import br.dev.saed.voleibr.ui.theme.onPrimaryContainerLight
@@ -73,13 +72,14 @@ fun MainScreen(
     onAddTeamNameChanged: (String) -> Unit = {},
     onClickAddTeam: () -> Unit = {},
     onClickDeleteTeam: (Team) -> Unit = {},
-    onClickResetPoints: () -> Unit = {}
+    onClickResetPoints: () -> Unit = {},
+    onNavigateToConfig: () -> Unit = {}
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /*TODO implements fab*/ },
+                onClick = { onNavigateToConfig() },
                 containerColor = MaterialTheme.colorScheme.primary
             ) {
                 Icon(imageVector = Icons.Default.Settings, contentDescription = null, tint = MaterialTheme.colorScheme.onPrimary)
@@ -187,7 +187,6 @@ fun MainScreen(
                     }
                     Row(
                         modifier = Modifier
-                            .padding(top = 4.dp)
                             .fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
@@ -196,8 +195,8 @@ fun MainScreen(
                             onClick = { onClickTeam1ScoreDecrease() },
                             shape = MaterialTheme.shapes.small,
                             modifier = Modifier
-                                .size(width = 50.dp, height = 40.dp)
-                                .padding(end = 4.dp),
+                                .padding(end = 4.dp)
+                                .weight(1f),
                             contentPadding = PaddingValues(2.dp)
                         ) {
                             Image(
@@ -211,8 +210,8 @@ fun MainScreen(
                             onClick = { onClickTeam1Scored() },
                             shape = MaterialTheme.shapes.small,
                             modifier = Modifier
-                                .size(width = 50.dp, height = 40.dp)
-                                .padding(start = 4.dp),
+                                .padding(start = 4.dp)
+                                .weight(1f),
                             contentPadding = PaddingValues(2.dp)
                         ) {
                             Icon(
@@ -307,7 +306,6 @@ fun MainScreen(
                     }
                     Row(
                         modifier = Modifier
-                            .padding(top = 4.dp)
                             .fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
@@ -316,8 +314,8 @@ fun MainScreen(
                             onClick = { onClickTeam2ScoreDecrease() },
                             shape = MaterialTheme.shapes.small,
                             modifier = Modifier
-                                .size(width = 50.dp, height = 40.dp)
-                                .padding(end = 4.dp),
+                                .padding(end = 4.dp)
+                                .weight(1f),
                             contentPadding = PaddingValues(2.dp)
                         ) {
                             Image(
@@ -331,8 +329,8 @@ fun MainScreen(
                             onClick = { onClickTeam2Scored() },
                             shape = MaterialTheme.shapes.small,
                             modifier = Modifier
-                                .size(width = 50.dp, height = 40.dp)
-                                .padding(start = 4.dp),
+                                .padding(start = 4.dp)
+                                .weight(1f),
                             contentPadding = PaddingValues(2.dp)
                         ) {
                             Icon(
@@ -345,42 +343,6 @@ fun MainScreen(
                     }
                 }
             }
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Switch(
-                        checked = uiState.vaiA2,
-                        onCheckedChange = { onClickSwitchVaiA2() }
-                    )
-                    Text(
-                        text = stringResource(id = R.string.txt_vai_a_2),
-                        modifier = Modifier.padding(start = 8.dp)
-                    )
-                }
-
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.txt_vibrar),
-                        modifier = Modifier.padding(end = 8.dp)
-                    )
-                    Switch(
-                        checked = uiState.vibrar,
-                        onCheckedChange = { onClickSwitchVibrar() }
-                    )
-                }
-            }
-
-
 
             Column(
                 modifier = Modifier

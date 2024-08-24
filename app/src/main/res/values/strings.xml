@@ -20,5 +20,6 @@
     <string name="txt_acss_btn_score_team_2">Pontuar time direita</string>
 
     <string name="txt_acss_btn_delete_team">Deletar time</string>
+    <string name="txt_configuracoes">Configurações</string>
 
 </resources>
