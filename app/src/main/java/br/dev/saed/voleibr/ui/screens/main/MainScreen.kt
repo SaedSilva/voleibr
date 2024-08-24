@@ -5,22 +5,28 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -71,14 +77,14 @@ fun MainScreen(
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-//        floatingActionButton = {
-//            FloatingActionButton(
-//                onClick = { /*TODO implements fab*/ },
-//                containerColor = MaterialTheme.colorScheme.primary
-//            ) {
-//                Icon(imageVector = Icons.Default.Info, contentDescription = null, tint = MaterialTheme.colorScheme.onPrimary)
-//            }
-//        }
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = { /*TODO implements fab*/ },
+                containerColor = MaterialTheme.colorScheme.primary
+            ) {
+                Icon(imageVector = Icons.Default.Settings, contentDescription = null, tint = MaterialTheme.colorScheme.onPrimary)
+            }
+        }
     ) { innerPadding ->
         if (uiState.winner != null) {
             WinnerDialog(winner = uiState.winner)
@@ -86,7 +92,6 @@ fun MainScreen(
 
         Column(
             modifier = modifier
-                .fillMaxSize()
                 .padding(innerPadding)
                 .padding(16.dp)
         ) {
@@ -94,10 +99,13 @@ fun MainScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 32.dp),
-                horizontalArrangement = Arrangement.SpaceAround,
+                horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Button(onClick = { onClickDecreaseMaxPoints() }) {
+                Button(
+                    onClick = { onClickDecreaseMaxPoints() },
+                    shape = MaterialTheme.shapes.small
+                ) {
                     Icon(
                         painter = painterResource(id = R.drawable.baseline_remove_24),
                         contentDescription = stringResource(id = R.string.txt_acss_btn_decrease_max_points)
@@ -120,19 +128,22 @@ fun MainScreen(
                     )
                 }
 
-                Button(onClick = { onClickIncreaseMaxPoints() }) {
+                Button(
+                    onClick = { onClickIncreaseMaxPoints() },
+                    shape = MaterialTheme.shapes.small
+                ) {
                     Icon(
                         imageVector = Icons.Default.Add,
                         contentDescription = stringResource(id = R.string.txt_acss_btn_increase_max_points)
                     )
                 }
             }
-
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Column(modifier = Modifier.size(width = 150.dp, height = 260.dp)) {
+                Column(modifier = Modifier.weight(1f)) {
                     Button(
                         modifier = Modifier.fillMaxWidth(),
                         enabled = uiState.teamsInQueue.isNotEmpty(),
@@ -170,13 +181,13 @@ fun MainScreen(
                                 text = uiState.team1.nome,
                                 fontSize = 24.sp,
                                 textAlign = TextAlign.Center,
-                                modifier = Modifier.size(width = 125.dp, height = 64.dp)
+                                minLines = 2
                             )
                         }
                     }
                     Row(
                         modifier = Modifier
-                            .padding(8.dp)
+                            .padding(top = 4.dp)
                             .fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
@@ -213,8 +224,10 @@ fun MainScreen(
                     }
                 }
 
+                Spacer(modifier = Modifier.width(4.dp))
+
                 Column(
-                    modifier = Modifier.size(width = 40.dp, height = 225.dp),
+                    modifier = Modifier,
                     verticalArrangement = Arrangement.Center,
                 ) {
                     Button(
@@ -248,7 +261,9 @@ fun MainScreen(
                     }
                 }
 
-                Column(modifier = Modifier.size(width = 150.dp, height = 260.dp)) {
+                Spacer(modifier = Modifier.width(4.dp))
+
+                Column(modifier = Modifier.weight(1f)) {
                     Button(
                         modifier = Modifier.fillMaxWidth(),
                         enabled = uiState.teamsInQueue.isNotEmpty(),
@@ -286,13 +301,13 @@ fun MainScreen(
                                 text = uiState.team2.nome,
                                 fontSize = 24.sp,
                                 textAlign = TextAlign.Center,
-                                modifier = Modifier.size(width = 125.dp, height = 64.dp)
+                                minLines = 2
                             )
                         }
                     }
                     Row(
                         modifier = Modifier
-                            .padding(8.dp)
+                            .padding(top = 4.dp)
                             .fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
@@ -332,12 +347,13 @@ fun MainScreen(
             }
 
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(8.dp)
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Switch(
                         checked = uiState.vaiA2,
@@ -348,9 +364,10 @@ fun MainScreen(
                         modifier = Modifier.padding(start = 8.dp)
                     )
                 }
+
+
                 Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(8.dp)
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         text = stringResource(id = R.string.txt_vibrar),
@@ -378,8 +395,7 @@ fun MainScreen(
                     singleLine = true,
                     label = { Text(text = stringResource(id = R.string.edit_team_name)) },
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp),
+                        .fillMaxWidth(),
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Go),
                     keyboardActions = KeyboardActions {
                         onClickAddTeam()
@@ -394,7 +410,6 @@ fun MainScreen(
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 8.dp, end = 8.dp)
                 ) {
                     Text(
                         text = stringResource(id = R.string.txt_add_queue),
