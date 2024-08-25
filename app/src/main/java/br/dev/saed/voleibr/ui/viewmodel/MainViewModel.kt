@@ -255,13 +255,17 @@ class MainViewModel(
     private fun switchTeams() {
         viewModelScope.launch {
             val team1 = _uiState.value.team1
+            val team1color = _uiState.value.team1Color.color
             val team2 = _uiState.value.team2
+            val team2color = _uiState.value.team2Color.color
 
             dataStoreHelper.saveTeam1(team2.nome)
             dataStoreHelper.savePointsTeam1(team2.pontos)
+            dataStoreHelper.saveTeam1Color(team2color)
 
             dataStoreHelper.saveTeam2(team1.nome)
             dataStoreHelper.savePointsTeam2(team1.pontos)
+            dataStoreHelper.saveTeam2Color(team1color)
         }
     }
 }
