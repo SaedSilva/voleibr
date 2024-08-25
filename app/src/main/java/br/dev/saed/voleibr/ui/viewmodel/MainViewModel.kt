@@ -8,6 +8,8 @@ import br.dev.saed.voleibr.model.repositories.db.TeamEntity
 import br.dev.saed.voleibr.model.repositories.db.TeamRepository
 import br.dev.saed.voleibr.ui.state.MainScreenEvent
 import br.dev.saed.voleibr.ui.state.MainScreenState
+import br.dev.saed.voleibr.ui.state.intToTeamColor
+import br.dev.saed.voleibr.ui.state.randomTeamColor
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -35,7 +37,10 @@ class MainViewModel(
                 dataStoreHelper.team2PointsFlow,
                 dataStoreHelper.vaiA2Flow,
                 dataStoreHelper.vibrarFlow,
+                dataStoreHelper.team1ColorFlow,
+                dataStoreHelper.team2ColorFlow,
                 repository.queue
+
             ) { array ->
                 val maxPoints = array[0] as Int
                 val team1 = array[1] as String
@@ -46,24 +51,31 @@ class MainViewModel(
                 val vaiA2 = array[5] as Boolean
                 val vibrar = array[6] as Boolean
 
-                val teamsInQueue = array[7] as List<TeamEntity>
+                val team1Color = array[7] as Int
+                val team2Color = array[8] as Int
+
+                val teamsInQueue = array[9] as List<TeamEntity>
 
                 MainScreenState(
                     maxPoints = maxPoints,
                     team1 = Team(nome = team1, pontos = team1Points),
+                    team1Color = intToTeamColor(team1Color),
                     team2 = Team(nome = team2, pontos = team2Points),
+                    team2Color = intToTeamColor(team2Color),
                     vaiA2 = vaiA2,
                     vibrar = vibrar,
                     teamsInQueue = teamsInQueue.map { team ->
                         Team(team.id, team.name)
                     }
                 )
-            }.collect {newState ->
+            }.collect { newState ->
                 _uiState.update {
                     it.copy(
                         maxPoints = newState.maxPoints,
                         team1 = newState.team1,
+                        team1Color = newState.team1Color,
                         team2 = newState.team2,
+                        team2Color = newState.team2Color,
                         vaiA2 = newState.vaiA2,
                         vibrar = newState.vibrar,
                         teamsInQueue = newState.teamsInQueue
@@ -184,6 +196,18 @@ class MainViewModel(
 
             is MainScreenEvent.OnAddTeamNameChanged -> _uiState.update {
                 it.copy(teamToAdd = it.teamToAdd.copy(nome = event.team))
+            }
+
+            is MainScreenEvent.ChangeTeam1Color -> {
+                viewModelScope.launch {
+                    dataStoreHelper.saveTeam1Color(randomTeamColor().color)
+                }
+            }
+
+            is MainScreenEvent.ChangeTeam2Color -> {
+                viewModelScope.launch {
+                    dataStoreHelper.saveTeam2Color(randomTeamColor().color)
+                }
             }
         }
     }

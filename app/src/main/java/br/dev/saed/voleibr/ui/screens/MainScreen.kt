@@ -1,6 +1,7 @@
 package br.dev.saed.voleibr.ui.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,9 +32,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -50,8 +53,6 @@ import br.dev.saed.voleibr.ui.theme.OrbitronFamily
 import br.dev.saed.voleibr.ui.theme.VoleibrTheme
 import br.dev.saed.voleibr.ui.theme.onPrimaryContainerLight
 import br.dev.saed.voleibr.ui.theme.onTertiaryContainerLight
-import br.dev.saed.voleibr.ui.theme.primaryContainerLight
-import br.dev.saed.voleibr.ui.theme.tertiaryContainerLight
 
 @Composable
 fun MainScreen(
@@ -62,6 +63,8 @@ fun MainScreen(
     onClickRemoveTeam1: () -> Unit = {},
     onClickRemoveTeam2: () -> Unit = {},
     onClickChangeTeams: () -> Unit = {},
+    onClickChangeTeam1Color: () -> Unit = {},
+    onClickChangeTeam2Color: () -> Unit = {},
     onClickTeam1Scored: () -> Unit = {},
     onClickTeam1ScoreDecrease: () -> Unit = {},
     onClickTeam2Scored: () -> Unit = {},
@@ -78,7 +81,8 @@ fun MainScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { onNavigateToConfig() },
-                containerColor = MaterialTheme.colorScheme.primary
+                containerColor = MaterialTheme.colorScheme.primary,
+                shape = MaterialTheme.shapes.small
             ) {
                 Icon(
                     imageVector = Icons.Default.Settings,
@@ -163,9 +167,13 @@ fun MainScreen(
                             )
                         }
                         Card(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    onClickChangeTeam1Color()
+                                },
                             colors = CardColors(
-                                containerColor = primaryContainerLight,
+                                containerColor = Color(uiState.team1Color.color),
                                 contentColor = onPrimaryContainerLight,
                                 disabledContentColor = MaterialTheme.colorScheme.onPrimary,
                                 disabledContainerColor = MaterialTheme.colorScheme.primary
@@ -283,9 +291,13 @@ fun MainScreen(
                             )
                         }
                         Card(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    onClickChangeTeam2Color()
+                                },
                             colors = CardColors(
-                                containerColor = tertiaryContainerLight,
+                                containerColor = Color(uiState.team2Color.color),
                                 contentColor = onTertiaryContainerLight,
                                 disabledContentColor = MaterialTheme.colorScheme.onPrimary,
                                 disabledContainerColor = MaterialTheme.colorScheme.primary
@@ -364,11 +376,13 @@ fun MainScreen(
                         label = { Text(text = stringResource(id = R.string.edit_team_name)) },
                         modifier = Modifier
                             .fillMaxWidth(),
+                        colors = TextFieldDefaults.colors(),
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Go),
                         keyboardActions = KeyboardActions {
                             onClickAddTeam()
                             onAddTeamNameChanged("")
-                        }
+                        },
+                        shape = MaterialTheme.shapes.small
                     )
 
                     Button(
@@ -377,7 +391,8 @@ fun MainScreen(
                             onAddTeamNameChanged("")
                         },
                         modifier = Modifier
-                            .fillMaxWidth()
+                            .fillMaxWidth(),
+                        shape = MaterialTheme.shapes.small
                     ) {
                         Text(
                             text = stringResource(id = R.string.txt_add_queue),
@@ -399,12 +414,13 @@ fun MainScreen(
                     )
                     Button(
                         onClick = { onClickClearQueue() },
-                        enabled = uiState.teamsInQueue.isNotEmpty()
+                        enabled = uiState.teamsInQueue.isNotEmpty(),
+                        shape = MaterialTheme.shapes.small
                     ) {
                         Text(text = stringResource(id = R.string.btn_clear_queue))
                         Icon(
                             imageVector = Icons.Default.Delete,
-                            contentDescription = stringResource(id = R.string.btn_clear_queue)
+                            contentDescription = stringResource(id = R.string.btn_clear_queue),
                         )
                     }
                 }
@@ -421,7 +437,10 @@ fun MainScreen(
                                 textAlign = TextAlign.Center,
                                 fontSize = 28.sp
                             )
-                            Button(onClick = { onClickDeleteTeam(uiState.teamsInQueue[it]) }) {
+                            Button(
+                                onClick = { onClickDeleteTeam(uiState.teamsInQueue[it]) },
+                                shape = MaterialTheme.shapes.small
+                            ) {
                                 Icon(
                                     imageVector = Icons.Default.Delete,
                                     contentDescription = stringResource(id = R.string.txt_acss_btn_delete_team)

@@ -128,6 +128,8 @@ private fun mainScreen(
         onClickRemoveTeam1 = { viewModel.onEvent(MainScreenEvent.RemoveTeam1) },
         onClickRemoveTeam2 = { viewModel.onEvent(MainScreenEvent.RemoveTeam2) },
         onNavigateToConfig = { navController.navigate(ConfigRoute) },
+        onClickChangeTeam1Color = { viewModel.onEvent(MainScreenEvent.ChangeTeam1Color) },
+        onClickChangeTeam2Color = { viewModel.onEvent(MainScreenEvent.ChangeTeam2Color) }
     )
 }
 

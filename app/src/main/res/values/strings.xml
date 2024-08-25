@@ -22,5 +22,9 @@
     <string name="txt_acss_btn_delete_team">Deletar time</string>
     <string name="txt_configuracoes">Configurações</string>
     <string name="txt_sobre">Esse é um aplicativo open source, feito por um pequeno estudante de sistemas de informação.\nMelhorias e sugestões são bem vindas, e você pode enviar diretamente para o meu email:\nsaed.sousa@hotmail.com</string>
+    <string name="txt_github">GitHub</string>
+    <string name="txt_instagram">Instagram</string>
+    <string name="url_github">https://github.com/SaedSilva</string>
+    <string name="url_instagram">https://www.instagram.com/saed.dev</string>
 
 </resources>
