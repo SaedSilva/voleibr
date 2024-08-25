@@ -2,6 +2,7 @@ package br.dev.saed.voleibr.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -28,7 +29,6 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -66,8 +66,6 @@ fun MainScreen(
     onClickTeam1ScoreDecrease: () -> Unit = {},
     onClickTeam2Scored: () -> Unit = {},
     onClickTeam2ScoreDecrease: () -> Unit = {},
-    onClickSwitchVaiA2: () -> Unit = {},
-    onClickSwitchVibrar: () -> Unit = {},
     onClickClearQueue: () -> Unit = {},
     onAddTeamNameChanged: (String) -> Unit = {},
     onClickAddTeam: () -> Unit = {},
@@ -82,350 +80,358 @@ fun MainScreen(
                 onClick = { onNavigateToConfig() },
                 containerColor = MaterialTheme.colorScheme.primary
             ) {
-                Icon(imageVector = Icons.Default.Settings, contentDescription = null, tint = MaterialTheme.colorScheme.onPrimary)
+                Icon(
+                    imageVector = Icons.Default.Settings,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onPrimary
+                )
             }
         }
     ) { innerPadding ->
-        if (uiState.winner != null) {
-            WinnerDialog(winner = uiState.winner)
-        }
-
-        Column(
+        Box(
             modifier = modifier
                 .padding(innerPadding)
-                .padding(16.dp)
+                .padding(16.dp),
+            contentAlignment = Alignment.TopCenter
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 32.dp),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Button(
-                    onClick = { onClickDecreaseMaxPoints() },
-                    shape = MaterialTheme.shapes.small
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.baseline_remove_24),
-                        contentDescription = stringResource(id = R.string.txt_acss_btn_decrease_max_points)
-                    )
-                }
-
-                Column(
-                    modifier = Modifier.padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.txt_max_points),
-                        style = MaterialTheme.typography.titleSmall,
-                        fontSize = 32.sp
-                    )
-                    Text(
-                        text = uiState.maxPoints.toString(),
-                        fontSize = 28.sp,
-                        fontFamily = OrbitronFamily
-                    )
-                }
-
-                Button(
-                    onClick = { onClickIncreaseMaxPoints() },
-                    shape = MaterialTheme.shapes.small
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = stringResource(id = R.string.txt_acss_btn_increase_max_points)
-                    )
-                }
-            }
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Column(modifier = Modifier.weight(1f)) {
-                    Button(
-                        modifier = Modifier.fillMaxWidth(),
-                        enabled = uiState.teamsInQueue.isNotEmpty(),
-                        shape = MaterialTheme.shapes.small,
-                        onClick = { onClickRemoveTeam1() }
-                    ) {
-                        Text(text = stringResource(id = R.string.btn_remove))
-                        Icon(
-                            imageVector = Icons.Default.Delete, contentDescription = stringResource(
-                                id = R.string.btn_remove
-                            )
-                        )
-                    }
-                    Card(
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = CardColors(
-                            containerColor = primaryContainerLight,
-                            contentColor = onPrimaryContainerLight,
-                            disabledContentColor = MaterialTheme.colorScheme.onPrimary,
-                            disabledContainerColor = MaterialTheme.colorScheme.primary
-                        )
-                    ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier
-                                .padding(8.dp)
-                                .fillMaxWidth()
-                        ) {
-                            Text(
-                                text = uiState.team1.pontos.toString(),
-                                fontSize = 64.sp,
-                                fontFamily = OrbitronFamily
-                            )
-                            Text(
-                                text = uiState.team1.nome,
-                                fontSize = 24.sp,
-                                textAlign = TextAlign.Center,
-                                minLines = 2
-                            )
-                        }
-                    }
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Button(
-                            onClick = { onClickTeam1ScoreDecrease() },
-                            shape = MaterialTheme.shapes.small,
-                            modifier = Modifier
-                                .padding(end = 4.dp)
-                                .weight(1f),
-                            contentPadding = PaddingValues(2.dp)
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.baseline_remove_24),
-                                contentDescription = stringResource(id = R.string.txt_acss_btn_decrease_team_points),
-                                modifier = Modifier.size(32.dp),
-                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary)
-                            )
-                        }
-                        Button(
-                            onClick = { onClickTeam1Scored() },
-                            shape = MaterialTheme.shapes.small,
-                            modifier = Modifier
-                                .padding(start = 4.dp)
-                                .weight(1f),
-                            contentPadding = PaddingValues(2.dp)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Add,
-                                contentDescription = stringResource(id = R.string.txt_acss_btn_score_team_1),
-                                modifier = Modifier.size(32.dp)
-                            )
-                        }
-                    }
-                }
-
-                Spacer(modifier = Modifier.width(4.dp))
-
-                Column(
-                    modifier = Modifier,
-                    verticalArrangement = Arrangement.Center,
-                ) {
-                    Button(
-                        onClick = { onClickResetPoints() },
-                        contentPadding = PaddingValues(0.dp),
-                        shape = MaterialTheme.shapes.small
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Refresh,
-                            contentDescription = stringResource(id = R.string.btn_reset_points),
-                            modifier = Modifier.size(32.dp)
-                        )
-                    }
-                    Button(
-                        onClick = { onClickChangeTeams() },
-                        contentPadding = PaddingValues(0.dp),
-                        shape = MaterialTheme.shapes.small
-                    ) {
-                        Column {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = stringResource(id = R.string.btn_reset_points),
-                                modifier = Modifier.size(15.dp)
-                            )
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                                contentDescription = stringResource(id = R.string.btn_reset_points),
-                                modifier = Modifier.size(15.dp)
-                            )
-                        }
-                    }
-                }
-
-                Spacer(modifier = Modifier.width(4.dp))
-
-                Column(modifier = Modifier.weight(1f)) {
-                    Button(
-                        modifier = Modifier.fillMaxWidth(),
-                        enabled = uiState.teamsInQueue.isNotEmpty(),
-                        shape = MaterialTheme.shapes.small,
-                        onClick = { onClickRemoveTeam2() }
-                    ) {
-                        Text(text = stringResource(id = R.string.btn_remove))
-                        Icon(
-                            imageVector = Icons.Default.Delete, contentDescription = stringResource(
-                                id = R.string.btn_remove
-                            )
-                        )
-                    }
-                    Card(
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = CardColors(
-                            containerColor = tertiaryContainerLight,
-                            contentColor = onTertiaryContainerLight,
-                            disabledContentColor = MaterialTheme.colorScheme.onPrimary,
-                            disabledContainerColor = MaterialTheme.colorScheme.primary
-                        )
-                    ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier
-                                .padding(8.dp)
-                                .fillMaxWidth()
-                        ) {
-                            Text(
-                                text = uiState.team2.pontos.toString(),
-                                fontSize = 64.sp,
-                                fontFamily = OrbitronFamily
-                            )
-                            Text(
-                                text = uiState.team2.nome,
-                                fontSize = 24.sp,
-                                textAlign = TextAlign.Center,
-                                minLines = 2
-                            )
-                        }
-                    }
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Button(
-                            onClick = { onClickTeam2ScoreDecrease() },
-                            shape = MaterialTheme.shapes.small,
-                            modifier = Modifier
-                                .padding(end = 4.dp)
-                                .weight(1f),
-                            contentPadding = PaddingValues(2.dp)
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.baseline_remove_24),
-                                contentDescription = stringResource(id = R.string.txt_acss_btn_decrease_team_points),
-                                modifier = Modifier.size(32.dp),
-                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary)
-                            )
-                        }
-                        Button(
-                            onClick = { onClickTeam2Scored() },
-                            shape = MaterialTheme.shapes.small,
-                            modifier = Modifier
-                                .padding(start = 4.dp)
-                                .weight(1f),
-                            contentPadding = PaddingValues(2.dp)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Add,
-                                contentDescription = stringResource(id = R.string.txt_acss_btn_score_team_2),
-                                modifier = Modifier.size(32.dp)
-                            )
-                        }
-
-                    }
-                }
+            if (uiState.winner != null) {
+                WinnerDialog(winner = uiState.winner)
             }
 
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.SpaceEvenly
-            ) {
-                TextField(
-                    value = uiState.teamToAdd.nome,
-                    onValueChange = { onAddTeamNameChanged(it) },
-                    singleLine = true,
-                    label = { Text(text = stringResource(id = R.string.edit_team_name)) },
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Go),
-                    keyboardActions = KeyboardActions {
-                        onClickAddTeam()
-                        onAddTeamNameChanged("")
-                    }
-                )
-
-                Button(
-                    onClick = {
-                        onClickAddTeam()
-                        onAddTeamNameChanged("")
-                    },
+            Column {
+                Row(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .padding(top = 32.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(
-                        text = stringResource(id = R.string.txt_add_queue),
-                        textAlign = TextAlign.Center
-                    )
-                }
-            }
+                    Button(
+                        onClick = { onClickDecreaseMaxPoints() },
+                        shape = MaterialTheme.shapes.small
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.baseline_remove_24),
+                            contentDescription = stringResource(id = R.string.txt_acss_btn_decrease_max_points)
+                        )
+                    }
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = stringResource(id = R.string.txt_teams_in_queue),
-                    fontSize = 24.sp
-                )
-                Button(
-                    onClick = { onClickClearQueue() },
-                    enabled = uiState.teamsInQueue.isNotEmpty()
-                ) {
-                    Text(text = stringResource(id = R.string.btn_clear_queue))
-                    Icon(
-                        imageVector = Icons.Default.Delete,
-                        contentDescription = stringResource(id = R.string.btn_clear_queue)
-                    )
-                }
-            }
-
-            LazyColumn {
-                items(uiState.teamsInQueue.size) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
+                    Column(
+                        modifier = Modifier.padding(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "${it + 1} - ${uiState.teamsInQueue[it].nome}",
-                            textAlign = TextAlign.Center,
-                            fontSize = 28.sp
+                            text = stringResource(id = R.string.txt_max_points),
+                            style = MaterialTheme.typography.titleSmall,
+                            fontSize = 32.sp
                         )
-                        Button(onClick = { onClickDeleteTeam(uiState.teamsInQueue[it]) }) {
+                        Text(
+                            text = uiState.maxPoints.toString(),
+                            fontSize = 28.sp,
+                            fontFamily = OrbitronFamily
+                        )
+                    }
+
+                    Button(
+                        onClick = { onClickIncreaseMaxPoints() },
+                        shape = MaterialTheme.shapes.small
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = stringResource(id = R.string.txt_acss_btn_increase_max_points)
+                        )
+                    }
+                }
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Button(
+                            modifier = Modifier.fillMaxWidth(),
+                            enabled = uiState.teamsInQueue.isNotEmpty(),
+                            shape = MaterialTheme.shapes.small,
+                            onClick = { onClickRemoveTeam1() }
+                        ) {
+                            Text(text = stringResource(id = R.string.btn_remove))
                             Icon(
                                 imageVector = Icons.Default.Delete,
-                                contentDescription = stringResource(id = R.string.txt_acss_btn_delete_team)
+                                contentDescription = stringResource(
+                                    id = R.string.btn_remove
+                                )
                             )
+                        }
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = CardColors(
+                                containerColor = primaryContainerLight,
+                                contentColor = onPrimaryContainerLight,
+                                disabledContentColor = MaterialTheme.colorScheme.onPrimary,
+                                disabledContainerColor = MaterialTheme.colorScheme.primary
+                            )
+                        ) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier
+                                    .padding(8.dp)
+                                    .fillMaxWidth()
+                            ) {
+                                Text(
+                                    text = uiState.team1.pontos.toString(),
+                                    fontSize = 64.sp,
+                                    fontFamily = OrbitronFamily
+                                )
+                                Text(
+                                    text = uiState.team1.nome,
+                                    fontSize = 24.sp,
+                                    textAlign = TextAlign.Center,
+                                    minLines = 2
+                                )
+                            }
+                        }
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Button(
+                                onClick = { onClickTeam1ScoreDecrease() },
+                                shape = MaterialTheme.shapes.small,
+                                modifier = Modifier
+                                    .padding(end = 4.dp)
+                                    .weight(1f),
+                                contentPadding = PaddingValues(2.dp)
+                            ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.baseline_remove_24),
+                                    contentDescription = stringResource(id = R.string.txt_acss_btn_decrease_team_points),
+                                    modifier = Modifier.size(32.dp),
+                                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary)
+                                )
+                            }
+                            Button(
+                                onClick = { onClickTeam1Scored() },
+                                shape = MaterialTheme.shapes.small,
+                                modifier = Modifier
+                                    .padding(start = 4.dp)
+                                    .weight(1f),
+                                contentPadding = PaddingValues(2.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Add,
+                                    contentDescription = stringResource(id = R.string.txt_acss_btn_score_team_1),
+                                    modifier = Modifier.size(32.dp)
+                                )
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.width(4.dp))
+
+                    Column(
+                        modifier = Modifier,
+                        verticalArrangement = Arrangement.Center,
+                    ) {
+                        Button(
+                            onClick = { onClickResetPoints() },
+                            contentPadding = PaddingValues(0.dp),
+                            shape = MaterialTheme.shapes.small
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Refresh,
+                                contentDescription = stringResource(id = R.string.btn_reset_points),
+                                modifier = Modifier.size(32.dp)
+                            )
+                        }
+                        Button(
+                            onClick = { onClickChangeTeams() },
+                            contentPadding = PaddingValues(0.dp),
+                            shape = MaterialTheme.shapes.small
+                        ) {
+                            Column {
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                    contentDescription = stringResource(id = R.string.btn_reset_points),
+                                    modifier = Modifier.size(15.dp)
+                                )
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                                    contentDescription = stringResource(id = R.string.btn_reset_points),
+                                    modifier = Modifier.size(15.dp)
+                                )
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.width(4.dp))
+
+                    Column(modifier = Modifier.weight(1f)) {
+                        Button(
+                            modifier = Modifier.fillMaxWidth(),
+                            enabled = uiState.teamsInQueue.isNotEmpty(),
+                            shape = MaterialTheme.shapes.small,
+                            onClick = { onClickRemoveTeam2() }
+                        ) {
+                            Text(text = stringResource(id = R.string.btn_remove))
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = stringResource(
+                                    id = R.string.btn_remove
+                                )
+                            )
+                        }
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = CardColors(
+                                containerColor = tertiaryContainerLight,
+                                contentColor = onTertiaryContainerLight,
+                                disabledContentColor = MaterialTheme.colorScheme.onPrimary,
+                                disabledContainerColor = MaterialTheme.colorScheme.primary
+                            )
+                        ) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier
+                                    .padding(8.dp)
+                                    .fillMaxWidth()
+                            ) {
+                                Text(
+                                    text = uiState.team2.pontos.toString(),
+                                    fontSize = 64.sp,
+                                    fontFamily = OrbitronFamily
+                                )
+                                Text(
+                                    text = uiState.team2.nome,
+                                    fontSize = 24.sp,
+                                    textAlign = TextAlign.Center,
+                                    minLines = 2
+                                )
+                            }
+                        }
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Button(
+                                onClick = { onClickTeam2ScoreDecrease() },
+                                shape = MaterialTheme.shapes.small,
+                                modifier = Modifier
+                                    .padding(end = 4.dp)
+                                    .weight(1f),
+                                contentPadding = PaddingValues(2.dp)
+                            ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.baseline_remove_24),
+                                    contentDescription = stringResource(id = R.string.txt_acss_btn_decrease_team_points),
+                                    modifier = Modifier.size(32.dp),
+                                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary)
+                                )
+                            }
+                            Button(
+                                onClick = { onClickTeam2Scored() },
+                                shape = MaterialTheme.shapes.small,
+                                modifier = Modifier
+                                    .padding(start = 4.dp)
+                                    .weight(1f),
+                                contentPadding = PaddingValues(2.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Add,
+                                    contentDescription = stringResource(id = R.string.txt_acss_btn_score_team_2),
+                                    modifier = Modifier.size(32.dp)
+                                )
+                            }
+
+                        }
+                    }
+                }
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    TextField(
+                        value = uiState.teamToAdd.nome,
+                        onValueChange = { onAddTeamNameChanged(it) },
+                        singleLine = true,
+                        label = { Text(text = stringResource(id = R.string.edit_team_name)) },
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Go),
+                        keyboardActions = KeyboardActions {
+                            onClickAddTeam()
+                            onAddTeamNameChanged("")
+                        }
+                    )
+
+                    Button(
+                        onClick = {
+                            onClickAddTeam()
+                            onAddTeamNameChanged("")
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.txt_add_queue),
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.txt_teams_in_queue),
+                        fontSize = 24.sp
+                    )
+                    Button(
+                        onClick = { onClickClearQueue() },
+                        enabled = uiState.teamsInQueue.isNotEmpty()
+                    ) {
+                        Text(text = stringResource(id = R.string.btn_clear_queue))
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = stringResource(id = R.string.btn_clear_queue)
+                        )
+                    }
+                }
+
+                LazyColumn {
+                    items(uiState.teamsInQueue.size) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = "${it + 1} - ${uiState.teamsInQueue[it].nome}",
+                                textAlign = TextAlign.Center,
+                                fontSize = 28.sp
+                            )
+                            Button(onClick = { onClickDeleteTeam(uiState.teamsInQueue[it]) }) {
+                                Icon(
+                                    imageVector = Icons.Default.Delete,
+                                    contentDescription = stringResource(id = R.string.txt_acss_btn_delete_team)
+                                )
+                            }
                         }
                     }
                 }
             }
         }
-
     }
 }
 

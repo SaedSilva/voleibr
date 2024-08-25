@@ -2,6 +2,8 @@ package br.dev.saed.voleibr.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
+val transparteLoading = Color(0xBF221B00)
+
 val primaryLight = Color(0xFF6D5E0F)
 val onPrimaryLight = Color(0xFFFFFFFF)
 val primaryContainerLight = Color(0xFFF8E287)

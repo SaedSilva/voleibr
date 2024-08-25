@@ -82,7 +82,13 @@ private fun configScreen(
         uiState = uiState,
         onClickSwitchVaiA2 = { viewModel.onEvent(MainScreenEvent.SwitchVaiA2) },
         onClickSwitchVibrar = { viewModel.onEvent(MainScreenEvent.SwitchVibrar) },
-        onNavigateToHome = { navController.popBackStack() }
+        onNavigateToHome = {
+            navController.navigate(HomeRoute) {
+                popUpTo(HomeRoute) {
+                    inclusive = true
+                }
+            }
+        }
     )
 }
 
@@ -114,8 +120,6 @@ private fun mainScreen(
         },
         onClickTeam2ScoreDecrease = { viewModel.onEvent(MainScreenEvent.Team2ScoreDecreased) },
         onClickChangeTeams = { viewModel.onEvent(MainScreenEvent.ChangeTeams) },
-        onClickSwitchVaiA2 = { viewModel.onEvent(MainScreenEvent.SwitchVaiA2) },
-        onClickSwitchVibrar = { viewModel.onEvent(MainScreenEvent.SwitchVibrar) },
         onClickClearQueue = { viewModel.onEvent(MainScreenEvent.ClearQueue) },
         onAddTeamNameChanged = { viewModel.onEvent(MainScreenEvent.OnAddTeamNameChanged(it)) },
         onClickAddTeam = { viewModel.onEvent(MainScreenEvent.ClickedAddTeam) },

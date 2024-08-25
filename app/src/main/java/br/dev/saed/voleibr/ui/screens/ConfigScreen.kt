@@ -1,5 +1,6 @@
 package br.dev.saed.voleibr.ui.screens
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -77,42 +78,50 @@ fun ConfigScreen(
             modifier = Modifier
                 .padding(innerPadding)
                 .padding(16.dp)
-                .fillMaxSize()
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Switch(
-                    checked = uiState.vaiA2,
-                    onCheckedChange = { onClickSwitchVaiA2() }
-                )
-                Text(
-                    text = stringResource(id = R.string.txt_vai_a_2),
-                    modifier = Modifier.padding(start = 8.dp)
-                )
-            }
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Switch(
-                    checked = uiState.vibrar,
-                    onCheckedChange = { onClickSwitchVibrar() }
-                )
-                Text(
-                    text = stringResource(id = R.string.txt_vibrar),
-                    modifier = Modifier.padding(start = 8.dp)
-                )
+            Column {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Switch(
+                        checked = uiState.vaiA2,
+                        onCheckedChange = { onClickSwitchVaiA2() }
+                    )
+                    Text(
+                        text = stringResource(id = R.string.txt_vai_a_2),
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+                }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Switch(
+                        checked = uiState.vibrar,
+                        onCheckedChange = { onClickSwitchVibrar() }
+                    )
+                    Text(
+                        text = stringResource(id = R.string.txt_vibrar),
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+                }
             }
 
-            TextButton(
-                onClick = {
-                    sobreDialog = true
-                },
-                modifier = Modifier.fillMaxWidth()
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = "Sobre")
+                TextButton(
+                    shape = MaterialTheme.shapes.small,
+                    onClick = {
+                        sobreDialog = true
+                    }
+                ) {
+                    Text(text = "Sobre")
+                }
             }
         }
     }
