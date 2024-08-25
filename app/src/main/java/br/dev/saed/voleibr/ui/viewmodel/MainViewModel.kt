@@ -140,6 +140,7 @@ class MainViewModel(
 
                     dataStoreHelper.saveTeam1(teamToDataStore.nome)
                     dataStoreHelper.savePointsTeam1(teamToDataStore.pontos)
+                    dataStoreHelper.savePointsTeam2(0)
                 }
             }
 
@@ -150,6 +151,7 @@ class MainViewModel(
 
                     dataStoreHelper.saveTeam2(teamToDataStore.nome)
                     dataStoreHelper.savePointsTeam2(teamToDataStore.pontos)
+                    dataStoreHelper.savePointsTeam1(0)
                 }
             }
 
