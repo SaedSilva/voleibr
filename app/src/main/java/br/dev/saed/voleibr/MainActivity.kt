@@ -5,6 +5,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -60,7 +63,22 @@ private fun App(
     )
     val uiState by viewModel.uiState.collectAsState()
 
-    NavHost(navController = navController, startDestination = HomeRoute) {
+    NavHost(
+        navController = navController,
+        startDestination = HomeRoute,
+        enterTransition = {
+            slideInHorizontally(initialOffsetX = { 1050 }, animationSpec = tween(750))
+        },
+        exitTransition = {
+            slideOutHorizontally(targetOffsetX = { -1050 }, animationSpec = tween(750))
+        },
+        popEnterTransition = {
+            slideInHorizontally(initialOffsetX = { -1050 }, animationSpec = tween(750))
+        },
+        popExitTransition = {
+            slideOutHorizontally(targetOffsetX = { 1050 }, animationSpec = tween(750))
+        }
+    ) {
         composable<HomeRoute> {
             mainScreen(modifier, uiState, viewModel, context, navController)
         }
@@ -83,11 +101,7 @@ private fun configScreen(
         onClickSwitchVaiA2 = { viewModel.onEvent(MainScreenEvent.SwitchVaiA2) },
         onClickSwitchVibrar = { viewModel.onEvent(MainScreenEvent.SwitchVibrar) },
         onNavigateToHome = {
-            navController.navigate(HomeRoute) {
-                popUpTo(HomeRoute) {
-                    inclusive = true
-                }
-            }
+            navController.popBackStack(HomeRoute, inclusive = false)
         }
     )
 }
