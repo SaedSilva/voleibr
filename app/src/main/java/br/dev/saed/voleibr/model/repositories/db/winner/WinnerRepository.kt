@@ -8,6 +8,10 @@ class WinnerRepository(
 ) {
     val winners get() = dao.getWinners()
 
+    suspend fun deleteWinner(team: String) = withContext(IO) {
+        dao.deleteTeam(team)
+    }
+
     suspend fun addWinner(winnerEntity: WinnerEntity) = withContext(IO) {
         dao.insert(winnerEntity)
     }

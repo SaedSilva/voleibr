@@ -7,6 +7,7 @@ import br.dev.saed.voleibr.ui.state.StatsScreenEvent
 import br.dev.saed.voleibr.ui.state.StatsScreenState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -19,8 +20,12 @@ class StatsViewModel(
 
     init {
         viewModelScope.launch {
-            _uiState.update {
-                it.copy(winner = winnerRepository.winners.first())
+            combine(_uiState, winnerRepository.winners) { _, winners ->
+                StatsScreenState(winners)
+            }.collect {newState ->
+                _uiState.update {
+                    newState
+                }
             }
         }
     }
@@ -32,6 +37,12 @@ class StatsViewModel(
                     _uiState.update {
                         it.copy(winner = winnerRepository.winners.first())
                     }
+                }
+            }
+
+            is StatsScreenEvent.DeleteTeam -> {
+                viewModelScope.launch {
+                    winnerRepository.deleteWinner(event.team)
                 }
             }
         }

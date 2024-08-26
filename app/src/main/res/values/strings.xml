@@ -29,5 +29,8 @@
     <string name="txt_stats">Estatísticas</string>
     <string name="txt_team">Time</string>
     <string name="txt_wins">Vitórias</string>
+    <string name="txt_cancel">Cancelar</string>
+    <string name="txt_ok">Sim</string>
+    <string name="txt_delete_team">"Tem certeza que deseja deletar todos os registros de: "</string>
 
 </resources>

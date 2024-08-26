@@ -143,7 +143,8 @@ private fun App(
                 onNavigateToHome = {
                     navController.popBackStack(HomeRoute, inclusive = false)
                 },
-                load = { statsViewModel.onEvent(StatsScreenEvent.Load) }
+                load = { statsViewModel.onEvent(StatsScreenEvent.Load) },
+                deleteTeam = { statsViewModel.onEvent(StatsScreenEvent.DeleteTeam(it)) }
             )
         }
     }
