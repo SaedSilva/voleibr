@@ -2,6 +2,7 @@ package br.dev.saed.voleibr.ui.screens
 
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -79,35 +80,44 @@ fun ConfigScreen(
         Column(
             modifier = modifier
                 .padding(innerPadding)
-                .padding(16.dp)
                 .fillMaxSize(),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Column {
                 Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            onClickSwitchVaiA2()
+                        }
+                        .padding(16.dp),
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
+                    Text(
+                        text = stringResource(id = R.string.txt_vai_a_2)
+                    )
                     Switch(
                         checked = uiState.vaiA2,
-                        onCheckedChange = { onClickSwitchVaiA2() }
-                    )
-                    Text(
-                        text = stringResource(id = R.string.txt_vai_a_2),
-                        modifier = Modifier.padding(start = 8.dp)
+                        onCheckedChange = null
                     )
                 }
                 Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            onClickSwitchVibrar()
+                        }
+                        .padding(16.dp),
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
+                    Text(
+                        text = stringResource(id = R.string.txt_vibrar)
+                    )
                     Switch(
                         checked = uiState.vibrar,
-                        onCheckedChange = { onClickSwitchVibrar() }
-                    )
-                    Text(
-                        text = stringResource(id = R.string.txt_vibrar),
-                        modifier = Modifier.padding(start = 8.dp)
+                        onCheckedChange = null
                     )
                 }
             }
