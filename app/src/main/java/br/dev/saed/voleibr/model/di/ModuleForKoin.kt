@@ -2,7 +2,7 @@ package br.dev.saed.voleibr.model.di
 
 import androidx.room.Room
 import br.dev.saed.voleibr.model.repositories.db.TeamDatabase
-import br.dev.saed.voleibr.model.repositories.db.TeamRepository
+import br.dev.saed.voleibr.model.repositories.db.team.TeamRepository
 import br.dev.saed.voleibr.ui.viewmodel.MainViewModel
 
 import org.koin.android.ext.koin.androidContext

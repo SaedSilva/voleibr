@@ -11,6 +11,9 @@ object HomeRoute
 @Serializable
 object ConfigRoute
 
+@Serializable
+object StatsRoute
+
 
 fun exitTransition() = shrinkHorizontally(animationSpec = tween(TIME_TRANSITION))
 

@@ -19,6 +19,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.automirrored.sharp.List
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Refresh
@@ -74,7 +75,8 @@ fun MainScreen(
     onClickAddTeam: () -> Unit = {},
     onClickDeleteTeam: (Team) -> Unit = {},
     onClickResetPoints: () -> Unit = {},
-    onNavigateToConfig: () -> Unit = {}
+    onNavigateToConfig: () -> Unit = {},
+    onNavigateToStats: () -> Unit = {}
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -268,6 +270,19 @@ fun MainScreen(
                                     imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                                     contentDescription = stringResource(id = R.string.btn_reset_points),
                                     modifier = Modifier.size(15.dp)
+                                )
+                            }
+                        }
+                        Button(
+                            onClick = { onNavigateToStats() },
+                            contentPadding = PaddingValues(0.dp),
+                            shape = MaterialTheme.shapes.small
+                        ) {
+                            Column {
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Sharp.List,
+                                    contentDescription = stringResource(id = R.string.btn_reset_points),
+                                    modifier = Modifier.size(32.dp)
                                 )
                             }
                         }

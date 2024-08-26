@@ -1,4 +1,4 @@
-package br.dev.saed.voleibr.model.repositories.db
+package br.dev.saed.voleibr.model.repositories.db.team
 
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext

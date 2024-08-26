@@ -77,7 +77,7 @@ fun ConfigScreen(
         }
 
         Column(
-            modifier = Modifier
+            modifier = modifier
                 .padding(innerPadding)
                 .padding(16.dp)
                 .fillMaxSize(),

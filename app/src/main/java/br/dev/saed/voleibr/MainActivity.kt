@@ -18,17 +18,22 @@ import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
 import br.dev.saed.voleibr.model.repositories.datastore.DataStoreHelper
 import br.dev.saed.voleibr.model.repositories.db.TeamDatabase
-import br.dev.saed.voleibr.model.repositories.db.TeamRepository
+import br.dev.saed.voleibr.model.repositories.db.team.TeamRepository
+import br.dev.saed.voleibr.model.repositories.db.winner.WinnerRepository
 import br.dev.saed.voleibr.ui.navigation.ConfigRoute
 import br.dev.saed.voleibr.ui.navigation.HomeRoute
+import br.dev.saed.voleibr.ui.navigation.StatsRoute
 import br.dev.saed.voleibr.ui.navigation.enterTransition
 import br.dev.saed.voleibr.ui.navigation.exitTransition
 import br.dev.saed.voleibr.ui.screens.ConfigScreen
 import br.dev.saed.voleibr.ui.screens.MainScreen
+import br.dev.saed.voleibr.ui.screens.StatsScreen
 import br.dev.saed.voleibr.ui.state.MainScreenEvent
 import br.dev.saed.voleibr.ui.state.MainScreenState
+import br.dev.saed.voleibr.ui.state.StatsScreenEvent
 import br.dev.saed.voleibr.ui.theme.VoleibrTheme
 import br.dev.saed.voleibr.ui.viewmodel.MainViewModel
+import br.dev.saed.voleibr.ui.viewmodel.StatsViewModel
 import br.dev.saed.voleibr.utils.vibrator
 
 class MainActivity : ComponentActivity() {
@@ -54,13 +59,20 @@ private fun App(
         context,
         TeamDatabase::class.java,
         "team_database"
-    ).build()
+    ).fallbackToDestructiveMigration().build()
+
     val teamDao = db.teamDAO()
-    val viewModel: MainViewModel = MainViewModel(
+    val winnerDao = db.winnerDAO()
+
+    val mainViewModel = MainViewModel(
         DataStoreHelper(context),
-        TeamRepository(teamDao)
+        TeamRepository(teamDao),
+        WinnerRepository(winnerDao)
     )
-    val uiState by viewModel.uiState.collectAsState()
+    val mainScreenState by mainViewModel.uiState.collectAsState()
+
+    val statsViewModel = StatsViewModel(WinnerRepository(winnerDao))
+    val statsScreenState by statsViewModel.uiState.collectAsState()
 
     NavHost(
         navController = navController,
@@ -79,71 +91,72 @@ private fun App(
         }
     ) {
         composable<HomeRoute> {
-            mainScreen(modifier, uiState, viewModel, context, navController)
+            MainScreen(
+                modifier = modifier,
+                uiState = mainScreenState,
+                onClickDecreaseMaxPoints = { mainViewModel.onEvent(MainScreenEvent.DecreaseMaxPoints) },
+                onClickIncreaseMaxPoints = { mainViewModel.onEvent(MainScreenEvent.IncreaseMaxPoints) },
+                onClickTeam1Scored = {
+                    mainViewModel.onEvent(MainScreenEvent.Team1Scored)
+                    if (mainViewModel.uiState.value.vibrar) {
+                        context.vibrator(1010)
+                    }
+                },
+                onClickTeam1ScoreDecrease = { mainViewModel.onEvent(MainScreenEvent.Team1ScoreDecreased) },
+                onClickTeam2Scored = {
+                    mainViewModel.onEvent(MainScreenEvent.Team2Scored)
+                    if (mainViewModel.uiState.value.vibrar) {
+                        context.vibrator(1010)
+                    }
+                },
+                onClickTeam2ScoreDecrease = { mainViewModel.onEvent(MainScreenEvent.Team2ScoreDecreased) },
+                onClickChangeTeams = { mainViewModel.onEvent(MainScreenEvent.ChangeTeams) },
+                onClickClearQueue = { mainViewModel.onEvent(MainScreenEvent.ClearQueue) },
+                onAddTeamNameChanged = { mainViewModel.onEvent(MainScreenEvent.OnAddTeamNameChanged(it)) },
+                onClickAddTeam = { mainViewModel.onEvent(MainScreenEvent.ClickedAddTeam) },
+                onClickDeleteTeam = { mainViewModel.onEvent(MainScreenEvent.ClickedDeleteTeam(it)) },
+                onClickResetPoints = { mainViewModel.onEvent(MainScreenEvent.ResetPoints) },
+                onClickRemoveTeam1 = { mainViewModel.onEvent(MainScreenEvent.RemoveTeam1) },
+                onClickRemoveTeam2 = { mainViewModel.onEvent(MainScreenEvent.RemoveTeam2) },
+                onNavigateToConfig = { navController.navigate(ConfigRoute) },
+                onClickChangeTeam1Color = { mainViewModel.onEvent(MainScreenEvent.ChangeTeam1Color) },
+                onClickChangeTeam2Color = { mainViewModel.onEvent(MainScreenEvent.ChangeTeam2Color) },
+                onNavigateToStats = { navController.navigate(StatsRoute) }
+            )
         }
         composable<ConfigRoute> {
-            configScreen(modifier, uiState, viewModel, navController)
+            ConfigScreen(
+                modifier = modifier,
+                uiState = mainScreenState,
+                onClickSwitchVaiA2 = { mainViewModel.onEvent(MainScreenEvent.SwitchVaiA2) },
+                onClickSwitchVibrar = { mainViewModel.onEvent(MainScreenEvent.SwitchVibrar) },
+                onNavigateToHome = {
+                    navController.popBackStack(HomeRoute, inclusive = false)
+                }
+            )
+        }
+
+        composable<StatsRoute> {
+            StatsScreen(
+                modifier = modifier,
+                uiState = statsScreenState,
+                onNavigateToHome = {
+                    navController.popBackStack(HomeRoute, inclusive = false)
+                },
+                load = { statsViewModel.onEvent(StatsScreenEvent.Load) }
+            )
         }
     }
 }
 
 @Composable
-private fun configScreen(
-    modifier: Modifier,
-    uiState: MainScreenState,
-    viewModel: MainViewModel,
-    navController: NavHostController
-) {
-    ConfigScreen(
-        modifier = modifier,
-        uiState = uiState,
-        onClickSwitchVaiA2 = { viewModel.onEvent(MainScreenEvent.SwitchVaiA2) },
-        onClickSwitchVibrar = { viewModel.onEvent(MainScreenEvent.SwitchVibrar) },
-        onNavigateToHome = {
-            navController.popBackStack(HomeRoute, inclusive = false)
-        }
-    )
-}
-
-@Composable
 private fun mainScreen(
     modifier: Modifier,
-    uiState: MainScreenState,
-    viewModel: MainViewModel,
+    mainScreenState: MainScreenState,
+    mainViewModel: MainViewModel,
     context: Context,
     navController: NavHostController
 ) {
-    MainScreen(
-        modifier = modifier,
-        uiState = uiState,
-        onClickDecreaseMaxPoints = { viewModel.onEvent(MainScreenEvent.DecreaseMaxPoints) },
-        onClickIncreaseMaxPoints = { viewModel.onEvent(MainScreenEvent.IncreaseMaxPoints) },
-        onClickTeam1Scored = {
-            viewModel.onEvent(MainScreenEvent.Team1Scored)
-            if (viewModel.uiState.value.vibrar) {
-                context.vibrator(1010)
-            }
-        },
-        onClickTeam1ScoreDecrease = { viewModel.onEvent(MainScreenEvent.Team1ScoreDecreased) },
-        onClickTeam2Scored = {
-            viewModel.onEvent(MainScreenEvent.Team2Scored)
-            if (viewModel.uiState.value.vibrar) {
-                context.vibrator(1010)
-            }
-        },
-        onClickTeam2ScoreDecrease = { viewModel.onEvent(MainScreenEvent.Team2ScoreDecreased) },
-        onClickChangeTeams = { viewModel.onEvent(MainScreenEvent.ChangeTeams) },
-        onClickClearQueue = { viewModel.onEvent(MainScreenEvent.ClearQueue) },
-        onAddTeamNameChanged = { viewModel.onEvent(MainScreenEvent.OnAddTeamNameChanged(it)) },
-        onClickAddTeam = { viewModel.onEvent(MainScreenEvent.ClickedAddTeam) },
-        onClickDeleteTeam = { viewModel.onEvent(MainScreenEvent.ClickedDeleteTeam(it)) },
-        onClickResetPoints = { viewModel.onEvent(MainScreenEvent.ResetPoints) },
-        onClickRemoveTeam1 = { viewModel.onEvent(MainScreenEvent.RemoveTeam1) },
-        onClickRemoveTeam2 = { viewModel.onEvent(MainScreenEvent.RemoveTeam2) },
-        onNavigateToConfig = { navController.navigate(ConfigRoute) },
-        onClickChangeTeam1Color = { viewModel.onEvent(MainScreenEvent.ChangeTeam1Color) },
-        onClickChangeTeam2Color = { viewModel.onEvent(MainScreenEvent.ChangeTeam2Color) }
-    )
 }
 
 @Preview

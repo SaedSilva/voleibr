@@ -4,8 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.dev.saed.voleibr.model.entities.Team
 import br.dev.saed.voleibr.model.repositories.datastore.DataStoreHelper
-import br.dev.saed.voleibr.model.repositories.db.TeamEntity
-import br.dev.saed.voleibr.model.repositories.db.TeamRepository
+import br.dev.saed.voleibr.model.repositories.db.team.TeamEntity
+import br.dev.saed.voleibr.model.repositories.db.team.TeamRepository
+import br.dev.saed.voleibr.model.repositories.db.winner.WinnerEntity
+import br.dev.saed.voleibr.model.repositories.db.winner.WinnerRepository
 import br.dev.saed.voleibr.ui.state.MainScreenEvent
 import br.dev.saed.voleibr.ui.state.MainScreenState
 import br.dev.saed.voleibr.ui.state.intToTeamColor
@@ -21,7 +23,8 @@ import kotlinx.coroutines.launch
 @Suppress("UNCHECKED_CAST")
 class MainViewModel(
     private val dataStoreHelper: DataStoreHelper,
-    private val repository: TeamRepository
+    private val teamRepository: TeamRepository,
+    private val winnerRepository: WinnerRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MainScreenState())
@@ -39,7 +42,7 @@ class MainViewModel(
                 dataStoreHelper.vibrarFlow,
                 dataStoreHelper.team1ColorFlow,
                 dataStoreHelper.team2ColorFlow,
-                repository.queue
+                teamRepository.queue
 
             ) { array ->
                 val maxPoints = array[0] as Int
@@ -136,7 +139,7 @@ class MainViewModel(
             is MainScreenEvent.RemoveTeam1 -> {
                 viewModelScope.launch {
                     val teamToDataStore = _uiState.value.teamsInQueue.first()
-                    repository.removeFirstTeam()
+                    teamRepository.removeFirstTeam()
 
                     dataStoreHelper.saveTeam1(teamToDataStore.nome)
                     dataStoreHelper.savePointsTeam1(teamToDataStore.pontos)
@@ -147,7 +150,7 @@ class MainViewModel(
             is MainScreenEvent.RemoveTeam2 -> {
                 viewModelScope.launch {
                     val teamToDataStore = _uiState.value.teamsInQueue.first()
-                    repository.removeFirstTeam()
+                    teamRepository.removeFirstTeam()
 
                     dataStoreHelper.saveTeam2(teamToDataStore.nome)
                     dataStoreHelper.savePointsTeam2(teamToDataStore.pontos)
@@ -171,21 +174,21 @@ class MainViewModel(
 
             is MainScreenEvent.ClearQueue -> {
                 viewModelScope.launch {
-                    repository.removeAllTeams()
+                    teamRepository.removeAllTeams()
                 }
             }
 
             is MainScreenEvent.ClickedAddTeam -> {
                 if (_uiState.value.teamToAdd.nome.isNotBlank()) {
                     viewModelScope.launch {
-                        repository.addTeam(TeamEntity(0, _uiState.value.teamToAdd.nome))
+                        teamRepository.addTeam(TeamEntity(0, _uiState.value.teamToAdd.nome))
                     }
                 }
             }
 
             is MainScreenEvent.ClickedDeleteTeam -> {
                 viewModelScope.launch {
-                    repository.removeTeam(TeamEntity(event.team.id, event.team.nome))
+                    teamRepository.removeTeam(TeamEntity(event.team.id, event.team.nome))
                 }
             }
 
@@ -227,9 +230,12 @@ class MainViewModel(
                 dataStoreHelper.savePointsTeam1(0)
                 dataStoreHelper.savePointsTeam2(0)
 
+                winnerRepository.addWinner(WinnerEntity.fromTeam(winner))
+
                 _uiState.update {
                     it.copy(winner = winner)
                 }
+
                 delay(2000)
                 _uiState.update {
                     it.copy(winner = null)
@@ -240,9 +246,9 @@ class MainViewModel(
 
     private fun rotateTeams(loser: Team) {
         viewModelScope.launch {
-            repository.addTeam(TeamEntity(loser.id, loser.nome))
+            teamRepository.addTeam(TeamEntity(loser.id, loser.nome))
             val teamToDataStore = _uiState.value.teamsInQueue.first()
-            repository.removeFirstTeam()
+            teamRepository.removeFirstTeam()
 
             if (dataStoreHelper.team1Flow.first() == loser.nome) {
                 dataStoreHelper.saveTeam1(teamToDataStore.nome)
