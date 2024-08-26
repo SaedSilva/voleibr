@@ -3,7 +3,7 @@ package br.dev.saed.voleibr.model.repositories.db
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
 
-public class TeamRepository(
+class TeamRepository(
     private val dao: TeamDao
 ) {
     val queue get() = dao.getAll()

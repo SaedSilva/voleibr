@@ -5,14 +5,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.expandHorizontally
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
-import androidx.compose.animation.shrinkHorizontally
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -29,6 +21,8 @@ import br.dev.saed.voleibr.model.repositories.db.TeamDatabase
 import br.dev.saed.voleibr.model.repositories.db.TeamRepository
 import br.dev.saed.voleibr.ui.navigation.ConfigRoute
 import br.dev.saed.voleibr.ui.navigation.HomeRoute
+import br.dev.saed.voleibr.ui.navigation.enterTransition
+import br.dev.saed.voleibr.ui.navigation.exitTransition
 import br.dev.saed.voleibr.ui.screens.ConfigScreen
 import br.dev.saed.voleibr.ui.screens.MainScreen
 import br.dev.saed.voleibr.ui.state.MainScreenEvent
@@ -36,7 +30,6 @@ import br.dev.saed.voleibr.ui.state.MainScreenState
 import br.dev.saed.voleibr.ui.theme.VoleibrTheme
 import br.dev.saed.voleibr.ui.viewmodel.MainViewModel
 import br.dev.saed.voleibr.utils.vibrator
-import kotlin.time.measureTime
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,7 +49,6 @@ private fun App(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
-    val timeTransition = 500
     val navController = rememberNavController()
     val db = Room.databaseBuilder(
         context,
@@ -74,16 +66,16 @@ private fun App(
         navController = navController,
         startDestination = HomeRoute,
         enterTransition = {
-            expandHorizontally(animationSpec = tween(timeTransition))
+            enterTransition()
         },
         exitTransition = {
-            shrinkHorizontally(animationSpec = tween(timeTransition))
+            exitTransition()
         },
         popEnterTransition = {
-            expandHorizontally(animationSpec = tween(timeTransition))
+            enterTransition()
         },
         popExitTransition = {
-            shrinkHorizontally(animationSpec = tween(timeTransition))
+            exitTransition()
         }
     ) {
         composable<HomeRoute> {
