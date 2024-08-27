@@ -32,5 +32,8 @@
     <string name="txt_cancel">Cancelar</string>
     <string name="txt_ok">Sim</string>
     <string name="txt_delete_team">"Tem certeza que deseja deletar todos os registros de: "</string>
+    <string name="txt_no_teams">Não há vitórias registradas</string>
+    <string name="txt_delete_all_teams">Deletar todos os times</string>
+    <string name="txt_all_teams">Todos os times!!!</string>
 
 </resources>

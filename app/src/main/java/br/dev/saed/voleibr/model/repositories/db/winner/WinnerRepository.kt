@@ -15,4 +15,8 @@ class WinnerRepository(
     suspend fun addWinner(winnerEntity: WinnerEntity) = withContext(IO) {
         dao.insert(winnerEntity)
     }
+
+    suspend fun deleteAll() = withContext(IO) {
+        dao.deleteAll()
+    }
 }

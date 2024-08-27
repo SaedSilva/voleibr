@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -42,7 +43,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             VoleibrTheme {
-                App()
+                App(modifier = Modifier.fillMaxSize())
             }
         }
     }
@@ -143,8 +144,8 @@ private fun App(
                 onNavigateToHome = {
                     navController.popBackStack(HomeRoute, inclusive = false)
                 },
-                load = { statsViewModel.onEvent(StatsScreenEvent.Load) },
-                deleteTeam = { statsViewModel.onEvent(StatsScreenEvent.DeleteTeam(it)) }
+                deleteTeam = { statsViewModel.onEvent(StatsScreenEvent.DeleteTeam(it)) },
+                deleteAllTeams = { statsViewModel.onEvent(StatsScreenEvent.DeleteAll) }
             )
         }
     }

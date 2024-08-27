@@ -21,4 +21,7 @@ interface WinnerDao {
 
     @Insert
     suspend fun insert(winner: WinnerEntity)
+
+    @Query("DELETE FROM winner")
+    suspend fun deleteAll()
 }

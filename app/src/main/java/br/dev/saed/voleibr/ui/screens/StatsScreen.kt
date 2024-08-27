@@ -25,8 +25,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -41,13 +43,9 @@ fun StatsScreen(
     modifier: Modifier = Modifier,
     uiState: StatsScreenState,
     onNavigateToHome: () -> Unit = {},
-    load: () -> Unit = {},
-    deleteTeam: (String) -> Unit = {}
+    deleteTeam: (String) -> Unit = {},
+    deleteAllTeams: () -> Unit = {}
 ) {
-    load()
-    var deleteTeamDialog by remember {
-        mutableStateOf(false)
-    }
 
     Scaffold(
         topBar = {
@@ -73,50 +71,93 @@ fun StatsScreen(
             modifier = modifier
                 .padding(innerPadding)
                 .padding(16.dp)
-                .fillMaxSize()
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Row(
-                modifier = Modifier
-                    .padding(8.dp)
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = stringResource(id = R.string.txt_team),
-                    style = MaterialTheme.typography.titleLarge
-                )
-                Text(
-                    text = stringResource(id = R.string.txt_wins),
-                    style = MaterialTheme.typography.titleLarge
-                )
-            }
-            LazyColumn {
-                items(uiState.winner.size) { index ->
-                    if (deleteTeamDialog) {
-                        DeleteTeamDialog(team = uiState.winner[index].name!!,
-                            onOkButton = {
-                                deleteTeam(uiState.winner[index].name!!)
-                                deleteTeamDialog = false
-                            },
-                            onCancelButton = {
-                                deleteTeamDialog = false
-                            })
-                    }
+            Column {
+                if (uiState.winner.isNotEmpty()) {
                     Row(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .combinedClickable(
-                                onLongClick = {
-                                    deleteTeamDialog = true
-                                },
-                                onClick = {}
-                            )
-                            .padding(8.dp),
+                            .padding(8.dp)
+                            .fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text(text = uiState.winner[index].name!!)
-                        Text(text = uiState.winner[index].wins.toString())
+                        Text(
+                            text = stringResource(id = R.string.txt_team),
+                            style = MaterialTheme.typography.titleLarge
+                        )
+                        Text(
+                            text = stringResource(id = R.string.txt_wins),
+                            style = MaterialTheme.typography.titleLarge
+                        )
                     }
+                } else {
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = stringResource(id = R.string.txt_no_teams),
+                        style = MaterialTheme.typography.titleLarge,
+                        textAlign = TextAlign.Center
+                    )
+                }
+                LazyColumn {
+                    items(uiState.winner.size) { index ->
+                        var showDialog by remember { mutableStateOf(false) }
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .combinedClickable(
+                                    onLongClick = {
+                                        showDialog = true
+                                    },
+                                    onClick = {
+
+                                    }
+                                )
+                                .padding(8.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(text = uiState.winner[index].name!!)
+                            Text(text = uiState.winner[index].wins.toString())
+                        }
+                        if (showDialog) {
+                            DeleteTeamDialog(
+                                team = uiState.winner[index].name!!,
+                                onDismissDialog = {
+                                    if (it) {
+                                        deleteTeam(uiState.winner[index].name!!)
+                                    }
+                                    showDialog = false
+                                }
+                            )
+                        }
+                    }
+                }
+            }
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                var showDialog by remember { mutableStateOf(false) }
+                TextButton(
+                    onClick = {
+                        showDialog = true
+                    }
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.txt_delete_all_teams),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+                if (showDialog) {
+                    DeleteTeamDialog(
+                        team = stringResource(id = R.string.txt_all_teams),
+                        onDismissDialog = {
+                            if (it) {
+                                deleteAllTeams()
+                            }
+                            showDialog = false
+                        }
+                    )
                 }
             }
         }
@@ -150,10 +191,9 @@ private fun StatsScreenPreview() {
 fun DeleteTeamDialog(
     modifier: Modifier = Modifier,
     team: String,
-    onOkButton: (Boolean) -> Unit = {},
-    onCancelButton: (Boolean) -> Unit = {}
+    onDismissDialog: (Boolean) -> Unit = {}
 ) {
-    Dialog(onDismissRequest = { onCancelButton(false) }) {
+    Dialog(onDismissRequest = { onDismissDialog(false) }) {
         Card {
             Column(
                 modifier = modifier
@@ -170,13 +210,13 @@ fun DeleteTeamDialog(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    TextButton(onClick = { onOkButton(true) }) {
+                    TextButton(onClick = { onDismissDialog(true) }) {
                         Text(
                             text = stringResource(id = R.string.txt_ok),
                             style = MaterialTheme.typography.bodyMedium
                         )
                     }
-                    TextButton(onClick = { onCancelButton(false) }) {
+                    TextButton(onClick = { onDismissDialog(false) }) {
                         Text(
                             text = stringResource(id = R.string.txt_cancel),
                             style = MaterialTheme.typography.bodyMedium

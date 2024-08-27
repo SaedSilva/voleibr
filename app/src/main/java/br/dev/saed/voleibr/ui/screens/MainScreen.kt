@@ -21,6 +21,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.automirrored.sharp.List
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
@@ -35,6 +36,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -98,13 +103,12 @@ fun MainScreen(
             modifier = modifier
                 .padding(innerPadding)
                 .padding(16.dp),
-            contentAlignment = Alignment.TopCenter
+            contentAlignment = Alignment.BottomStart
         ) {
             if (uiState.winner != null) {
                 WinnerDialog(winner = uiState.winner)
             }
-
-            Column {
+            Column(modifier = modifier) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -376,46 +380,6 @@ fun MainScreen(
                         }
                     }
                 }
-
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    TextField(
-                        value = uiState.teamToAdd.nome,
-                        onValueChange = { onAddTeamNameChanged(it) },
-                        singleLine = true,
-                        label = { Text(text = stringResource(id = R.string.edit_team_name)) },
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        colors = TextFieldDefaults.colors(),
-                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Go),
-                        keyboardActions = KeyboardActions {
-                            onClickAddTeam()
-                            onAddTeamNameChanged("")
-                        },
-                        shape = MaterialTheme.shapes.small
-                    )
-
-                    Button(
-                        onClick = {
-                            onClickAddTeam()
-                            onAddTeamNameChanged("")
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        shape = MaterialTheme.shapes.small
-                    ) {
-                        Text(
-                            text = stringResource(id = R.string.txt_add_queue),
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                }
-
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -423,22 +387,34 @@ fun MainScreen(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+                    var showDialog by remember {
+                        mutableStateOf(false)
+                    }
                     Text(
                         text = stringResource(id = R.string.txt_teams_in_queue),
                         fontSize = 24.sp
                     )
                     Button(
-                        onClick = { onClickClearQueue() },
-                        enabled = uiState.teamsInQueue.isNotEmpty(),
+                        onClick = { showDialog = true },
                         shape = MaterialTheme.shapes.small
                     ) {
-                        Text(text = stringResource(id = R.string.btn_clear_queue))
                         Icon(
-                            imageVector = Icons.Default.Delete,
+                            imageVector = Icons.Default.AddCircle,
                             contentDescription = stringResource(id = R.string.btn_clear_queue),
                         )
                     }
+                    if (showDialog) {
+                        AddTeamDialog(
+                            uiState = uiState,
+                            onAddTeamNameChanged = onAddTeamNameChanged,
+                            onClickAddTeam = onClickAddTeam
+                        ) {
+                            showDialog = false
+
+                        }
+                    }
                 }
+
 
                 LazyColumn {
                     items(uiState.teamsInQueue.size) {
@@ -464,6 +440,17 @@ fun MainScreen(
                         }
                     }
                 }
+            }
+            Button(
+                onClick = { onClickClearQueue() },
+                enabled = uiState.teamsInQueue.isNotEmpty(),
+                shape = MaterialTheme.shapes.small
+            ) {
+                Text(text = stringResource(id = R.string.btn_clear_queue))
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = stringResource(id = R.string.btn_clear_queue),
+                )
             }
         }
     }
@@ -499,6 +486,62 @@ fun WinnerDialog(
     }
 }
 
+@Composable
+fun AddTeamDialog(
+    modifier: Modifier = Modifier,
+    uiState: MainScreenState,
+    onAddTeamNameChanged: (String) -> Unit = {},
+    onClickAddTeam: () -> Unit = {},
+    onDismissRequest: () -> Unit = {}
+) {
+    Dialog(onDismissRequest = onDismissRequest) {
+        Card {
+            Column(modifier = Modifier.padding(8.dp)) {
+                TextField(
+                    value = uiState.teamToAdd.nome,
+                    onValueChange = { onAddTeamNameChanged(it) },
+                    singleLine = true,
+                    label = { Text(text = stringResource(id = R.string.edit_team_name)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = TextFieldDefaults.colors(),
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Go),
+                    keyboardActions = KeyboardActions {
+                        onClickAddTeam()
+                        onAddTeamNameChanged("")
+                    },
+                    shape = MaterialTheme.shapes.small
+                )
+
+                Button(
+                    onClick = {
+                        onClickAddTeam()
+                        onAddTeamNameChanged("")
+                        onDismissRequest()
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    shape = MaterialTheme.shapes.small
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.txt_add_queue),
+                        textAlign = TextAlign.Center
+                    )
+                }
+
+            }
+
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun AddTeamDialogPreview() {
+    VoleibrTheme {
+        AddTeamDialog(uiState = MainScreenState())
+    }
+}
+
 @Preview
 @Composable
 private fun WinnerDialogPreview() {
@@ -512,7 +555,8 @@ private fun WinnerDialogPreview() {
 private fun MainScreenPreview() {
     VoleibrTheme {
         MainScreen(
-            uiState = MainScreenState()
+            uiState = MainScreenState(),
+            modifier = Modifier.fillMaxSize()
         )
     }
 }

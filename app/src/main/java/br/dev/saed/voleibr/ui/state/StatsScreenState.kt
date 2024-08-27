@@ -7,6 +7,6 @@ data class StatsScreenState (
 )
 
 sealed class StatsScreenEvent {
-    data object Load : StatsScreenEvent()
+    data object DeleteAll : StatsScreenEvent()
     data class DeleteTeam(val team: String) : StatsScreenEvent()
 }
