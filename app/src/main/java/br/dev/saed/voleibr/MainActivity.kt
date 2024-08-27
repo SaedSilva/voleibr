@@ -3,6 +3,7 @@ package br.dev.saed.voleibr
 import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,6 +11,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
@@ -78,6 +82,8 @@ private fun App(
     val statsViewModel = StatsViewModel(WinnerRepository(winnerDao))
     val statsScreenState by statsViewModel.uiState.collectAsState()
 
+    var inTransition by remember { mutableStateOf(false) }
+
     NavHost(
         navController = navController,
         startDestination = HomeRoute,
@@ -116,7 +122,13 @@ private fun App(
                 onClickTeam2ScoreDecrease = { mainViewModel.onEvent(MainScreenEvent.Team2ScoreDecreased) },
                 onClickChangeTeams = { mainViewModel.onEvent(MainScreenEvent.ChangeTeams) },
                 onClickClearQueue = { mainViewModel.onEvent(MainScreenEvent.ClearQueue) },
-                onAddTeamNameChanged = { mainViewModel.onEvent(MainScreenEvent.OnAddTeamNameChanged(it)) },
+                onAddTeamNameChanged = {
+                    mainViewModel.onEvent(
+                        MainScreenEvent.OnAddTeamNameChanged(
+                            it
+                        )
+                    )
+                },
                 onClickAddTeam = { mainViewModel.onEvent(MainScreenEvent.ClickedAddTeam) },
                 onClickDeleteTeam = { mainViewModel.onEvent(MainScreenEvent.ClickedDeleteTeam(it)) },
                 onClickResetPoints = { mainViewModel.onEvent(MainScreenEvent.ResetPoints) },

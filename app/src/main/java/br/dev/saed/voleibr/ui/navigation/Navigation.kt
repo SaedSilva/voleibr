@@ -18,10 +18,7 @@ object ConfigRoute
 @Serializable
 object StatsRoute
 
-fun enterTransition() = slideInHorizontally(initialOffsetX = { TIME_TRANSITION }) + fadeIn()
+fun enterTransition() = fadeIn(animationSpec = tween(TIME_TRANSITION))
+fun exitTransition() = fadeOut(animationSpec = tween(TIME_TRANSITION))
 
-fun exitTransition() = slideOutHorizontally(targetOffsetX = { -TIME_TRANSITION }) + fadeOut()
-
-
-
-private val TIME_TRANSITION = 1000
+private const val TIME_TRANSITION = 500
