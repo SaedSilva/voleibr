@@ -23,6 +23,4 @@ class TeamRepository(
     suspend fun removeAllTeams() = withContext(IO) {
         dao.deleteAll()
     }
-
-
 }

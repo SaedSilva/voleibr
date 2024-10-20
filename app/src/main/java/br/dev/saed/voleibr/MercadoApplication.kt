@@ -17,7 +17,5 @@ class MercadoApplication : Application() {
 
             modules(appModule, storageModule)
         }
-
     }
-
 }

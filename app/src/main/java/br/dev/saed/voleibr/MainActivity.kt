@@ -6,6 +6,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -41,6 +43,7 @@ import br.dev.saed.voleibr.ui.theme.VoleibrTheme
 import br.dev.saed.voleibr.ui.viewmodel.MainViewModel
 import br.dev.saed.voleibr.ui.viewmodel.StatsViewModel
 import br.dev.saed.voleibr.utils.vibrator
+import org.koin.androidx.compose.koinViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,9 +64,10 @@ class MainActivity : ComponentActivity() {
 private fun App(
     modifier: Modifier = Modifier
 ) {
-    val context = LocalContext.current
     val navController = rememberNavController()
-    val db = Room.databaseBuilder(
+
+    val context = LocalContext.current
+    /*val db = Room.databaseBuilder(
         context,
         TeamDatabase::class.java,
         "team_database"
@@ -77,27 +81,28 @@ private fun App(
         TeamRepository(teamDao),
         WinnerRepository(winnerDao)
     )
+    val statsViewModel = StatsViewModel(WinnerRepository(winnerDao))*/
+
+    val mainViewModel = koinViewModel<MainViewModel>()
+    val statsViewModel = koinViewModel<StatsViewModel>()
+
     val mainScreenState by mainViewModel.uiState.collectAsState()
-
-    val statsViewModel = StatsViewModel(WinnerRepository(winnerDao))
     val statsScreenState by statsViewModel.uiState.collectAsState()
-
-    var inTransition by remember { mutableStateOf(false) }
 
     NavHost(
         navController = navController,
         startDestination = HomeRoute,
         enterTransition = {
-            enterTransition()
+            EnterTransition.None
         },
         exitTransition = {
-            exitTransition()
+            ExitTransition.None
         },
         popEnterTransition = {
-            enterTransition()
+            EnterTransition.None
         },
         popExitTransition = {
-            exitTransition()
+            ExitTransition.None
         }
     ) {
         composable<HomeRoute> {
@@ -151,7 +156,6 @@ private fun App(
                 }
             )
         }
-
         composable<StatsRoute> {
             StatsScreen(
                 modifier = modifier,
@@ -164,16 +168,6 @@ private fun App(
             )
         }
     }
-}
-
-@Composable
-private fun mainScreen(
-    modifier: Modifier,
-    mainScreenState: MainScreenState,
-    mainViewModel: MainViewModel,
-    context: Context,
-    navController: NavHostController
-) {
 }
 
 @Preview
