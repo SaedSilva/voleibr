@@ -9,15 +9,6 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import kotlinx.serialization.Serializable
 
-@Serializable
-object HomeRoute
-
-@Serializable
-object ConfigRoute
-
-@Serializable
-object StatsRoute
-
 fun enterTransition() = fadeIn(animationSpec = tween(TIME_TRANSITION))
 fun exitTransition() = fadeOut(animationSpec = tween(TIME_TRANSITION))
 

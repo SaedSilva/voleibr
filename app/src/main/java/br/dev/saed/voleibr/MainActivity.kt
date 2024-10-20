@@ -1,48 +1,26 @@
 package br.dev.saed.voleibr
 
-import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Surface
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.room.Room
-import br.dev.saed.voleibr.model.repositories.datastore.DataStoreHelper
-import br.dev.saed.voleibr.model.repositories.db.TeamDatabase
-import br.dev.saed.voleibr.model.repositories.db.team.TeamRepository
-import br.dev.saed.voleibr.model.repositories.db.winner.WinnerRepository
-import br.dev.saed.voleibr.ui.navigation.ConfigRoute
 import br.dev.saed.voleibr.ui.navigation.HomeRoute
-import br.dev.saed.voleibr.ui.navigation.StatsRoute
-import br.dev.saed.voleibr.ui.navigation.enterTransition
-import br.dev.saed.voleibr.ui.navigation.exitTransition
-import br.dev.saed.voleibr.ui.screens.ConfigScreen
-import br.dev.saed.voleibr.ui.screens.MainScreen
-import br.dev.saed.voleibr.ui.screens.StatsScreen
-import br.dev.saed.voleibr.ui.state.MainScreenEvent
-import br.dev.saed.voleibr.ui.state.MainScreenState
-import br.dev.saed.voleibr.ui.state.StatsScreenEvent
+import br.dev.saed.voleibr.ui.navigation.configScreen
+import br.dev.saed.voleibr.ui.navigation.mainScreen
+import br.dev.saed.voleibr.ui.navigation.statsScreen
 import br.dev.saed.voleibr.ui.theme.VoleibrTheme
 import br.dev.saed.voleibr.ui.viewmodel.MainViewModel
 import br.dev.saed.voleibr.ui.viewmodel.StatsViewModel
-import br.dev.saed.voleibr.utils.vibrator
 import org.koin.androidx.compose.koinViewModel
 
 class MainActivity : ComponentActivity() {
@@ -51,9 +29,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             VoleibrTheme {
-                Surface {
                     App(modifier = Modifier.fillMaxSize())
-                }
             }
         }
     }
@@ -66,28 +42,9 @@ private fun App(
 ) {
     val navController = rememberNavController()
 
-    val context = LocalContext.current
-    /*val db = Room.databaseBuilder(
-        context,
-        TeamDatabase::class.java,
-        "team_database"
-    ).fallbackToDestructiveMigration().build()
-
-    val teamDao = db.teamDAO()
-    val winnerDao = db.winnerDAO()
-
-    val mainViewModel = MainViewModel(
-        DataStoreHelper(context),
-        TeamRepository(teamDao),
-        WinnerRepository(winnerDao)
-    )
-    val statsViewModel = StatsViewModel(WinnerRepository(winnerDao))*/
-
     val mainViewModel = koinViewModel<MainViewModel>()
-    val statsViewModel = koinViewModel<StatsViewModel>()
 
-    val mainScreenState by mainViewModel.uiState.collectAsState()
-    val statsScreenState by statsViewModel.uiState.collectAsState()
+    val statsViewModel = koinViewModel<StatsViewModel>()
 
     NavHost(
         navController = navController,
@@ -105,70 +62,14 @@ private fun App(
             ExitTransition.None
         }
     ) {
-        composable<HomeRoute> {
-            MainScreen(
-                modifier = modifier,
-                uiState = mainScreenState,
-                onClickDecreaseMaxPoints = { mainViewModel.onEvent(MainScreenEvent.DecreaseMaxPoints) },
-                onClickIncreaseMaxPoints = { mainViewModel.onEvent(MainScreenEvent.IncreaseMaxPoints) },
-                onClickTeam1Scored = {
-                    mainViewModel.onEvent(MainScreenEvent.Team1Scored)
-                    if (mainViewModel.uiState.value.vibrar) {
-                        context.vibrator(1010)
-                    }
-                },
-                onClickTeam1ScoreDecrease = { mainViewModel.onEvent(MainScreenEvent.Team1ScoreDecreased) },
-                onClickTeam2Scored = {
-                    mainViewModel.onEvent(MainScreenEvent.Team2Scored)
-                    if (mainViewModel.uiState.value.vibrar) {
-                        context.vibrator(1010)
-                    }
-                },
-                onClickTeam2ScoreDecrease = { mainViewModel.onEvent(MainScreenEvent.Team2ScoreDecreased) },
-                onClickChangeTeams = { mainViewModel.onEvent(MainScreenEvent.ChangeTeams) },
-                onClickClearQueue = { mainViewModel.onEvent(MainScreenEvent.ClearQueue) },
-                onAddTeamNameChanged = {
-                    mainViewModel.onEvent(
-                        MainScreenEvent.OnAddTeamNameChanged(
-                            it
-                        )
-                    )
-                },
-                onClickAddTeam = { mainViewModel.onEvent(MainScreenEvent.ClickedAddTeam) },
-                onClickDeleteTeam = { mainViewModel.onEvent(MainScreenEvent.ClickedDeleteTeam(it)) },
-                onClickResetPoints = { mainViewModel.onEvent(MainScreenEvent.ResetPoints) },
-                onClickRemoveTeam1 = { mainViewModel.onEvent(MainScreenEvent.RemoveTeam1) },
-                onClickRemoveTeam2 = { mainViewModel.onEvent(MainScreenEvent.RemoveTeam2) },
-                onNavigateToConfig = { navController.navigate(ConfigRoute) },
-                onClickChangeTeam1Color = { mainViewModel.onEvent(MainScreenEvent.ChangeTeam1Color) },
-                onClickChangeTeam2Color = { mainViewModel.onEvent(MainScreenEvent.ChangeTeam2Color) },
-                onNavigateToStats = { navController.navigate(StatsRoute) }
-            )
-        }
-        composable<ConfigRoute> {
-            ConfigScreen(
-                modifier = modifier,
-                uiState = mainScreenState,
-                onClickSwitchVaiA2 = { mainViewModel.onEvent(MainScreenEvent.SwitchVaiA2) },
-                onClickSwitchVibrar = { mainViewModel.onEvent(MainScreenEvent.SwitchVibrar) },
-                onNavigateToHome = {
-                    navController.popBackStack(HomeRoute, inclusive = false)
-                }
-            )
-        }
-        composable<StatsRoute> {
-            StatsScreen(
-                modifier = modifier,
-                uiState = statsScreenState,
-                onNavigateToHome = {
-                    navController.popBackStack(HomeRoute, inclusive = false)
-                },
-                deleteTeam = { statsViewModel.onEvent(StatsScreenEvent.DeleteTeam(it)) },
-                deleteAllTeams = { statsViewModel.onEvent(StatsScreenEvent.DeleteAll) }
-            )
-        }
+        mainScreen(modifier, navController, mainViewModel)
+        configScreen(modifier, mainViewModel, navController)
+        statsScreen(modifier, navController, statsViewModel)
     }
 }
+
+
+
 
 @Preview
 @Composable

@@ -111,8 +111,7 @@ fun MainScreen(
             Column(modifier = modifier) {
                 Row(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 32.dp),
+                        .fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
