@@ -1,6 +1,7 @@
 package br.dev.saed.voleibr.ui.screens
 
 import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -157,8 +158,8 @@ fun SobreDialog(
     val git = stringResource(id = R.string.url_github)
     val insta = stringResource(id = R.string.url_instagram)
     val context = LocalContext.current
-    val gintent = remember { Intent(Intent.ACTION_VIEW, git.toUri()) }
-    val iintent = remember { Intent(Intent.ACTION_VIEW, insta.toUri()) }
+    val gintent = remember { Intent(Intent.ACTION_VIEW, Uri.parse(git)) }
+    val iintent = remember { Intent(Intent.ACTION_VIEW, Uri.parse(insta)) }
 
     Dialog(onDismissRequest = onDismissDialog) {
         Card(modifier = modifier) {

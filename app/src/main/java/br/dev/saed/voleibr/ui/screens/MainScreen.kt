@@ -9,7 +9,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -336,17 +336,22 @@ private fun TeamScoreCard(
         ),
         shape = MaterialTheme.shapes.medium
     ) {
-        Box(
+        BoxWithConstraints(
             modifier = Modifier.fillMaxSize().clickable { onScored() },
             contentAlignment = Alignment.Center
         ) {
+            val scoreFontValue = (maxHeight.value * 0.66f).coerceIn(40f, 140f)
+            val nameFontValue = (scoreFontValue * 0.18f).coerceIn(12f, 20f)
+            val scoreFontSize = scoreFontValue.sp
+            val nameFontSize = nameFontValue.sp
+
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(
                     text = team.pontos.toString(),
-                    fontSize = 72.sp,
+                    fontSize = scoreFontSize,
                     fontFamily = OrbitronFamily,
                     color = if (isMatchPoint) Color(0xFFFFB300) else contentColor,
                     modifier = Modifier.scale(scoreScale.value)
@@ -364,7 +369,7 @@ private fun TeamScoreCard(
                         )
                         Text(
                             text = team.nome,
-                            fontSize = 26.sp,
+                            fontSize = nameFontSize,
                             textAlign = TextAlign.Center,
                             minLines = 2,
                             maxLines = 3,
@@ -375,7 +380,7 @@ private fun TeamScoreCard(
                 } else {
                     Text(
                         text = team.nome,
-                        fontSize = 26.sp,
+                        fontSize = nameFontSize,
                         textAlign = TextAlign.Center,
                         minLines = 2,
                         maxLines = 3,
