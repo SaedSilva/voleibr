@@ -101,6 +101,7 @@ fun MainScreen(
             uiState = uiState,
             onClickSwitchVaiA2 = { onEvent(MainScreenEvent.SwitchVaiA2) },
             onClickSwitchVibrar = { onEvent(MainScreenEvent.SwitchVibrar) },
+            onClickSwitchKeepScreenOn = { onEvent(MainScreenEvent.SwitchKeepScreenOn) },
             onDismiss = { showConfigSheet = false }
         )
     }
@@ -515,6 +516,7 @@ private fun ConfigBottomSheet(
     uiState: MainScreenState,
     onClickSwitchVaiA2: () -> Unit,
     onClickSwitchVibrar: () -> Unit,
+    onClickSwitchKeepScreenOn: () -> Unit,
     onDismiss: () -> Unit
 ) {
     var showSobreDialog by remember { mutableStateOf(false) }
@@ -561,6 +563,18 @@ private fun ConfigBottomSheet(
             ) {
                 Text(text = stringResource(id = R.string.txt_vibrar))
                 Switch(checked = uiState.vibrar, onCheckedChange = null)
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onClickSwitchKeepScreenOn() }
+                    .padding(vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(text = "Manter tela ativa")
+                Switch(checked = uiState.keepScreenOn, onCheckedChange = null)
             }
 
             TextButton(

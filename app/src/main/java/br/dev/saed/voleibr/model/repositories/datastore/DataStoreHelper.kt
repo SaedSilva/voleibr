@@ -24,6 +24,7 @@ class DataStoreHelper(private val context: Context) {
         val TEAM_2_COLOR = intPreferencesKey("team_2_color")
         val VAI_A_2 = booleanPreferencesKey("vai_a_2")
         val VIBRAR = booleanPreferencesKey("vibrar")
+        val KEEP_SCREEN_ON = booleanPreferencesKey("keep_screen_on")
     }
 
     val maxPointsFlow: Flow<Int> = context.dataStore.data.map { preferences ->
@@ -60,6 +61,10 @@ class DataStoreHelper(private val context: Context) {
 
     val vibrarFlow: Flow<Boolean> = context.dataStore.data.map { preferences ->
         preferences[VIBRAR] ?: true
+    }
+
+    val keepScreenOnFlow: Flow<Boolean> = context.dataStore.data.map { preferences ->
+        preferences[KEEP_SCREEN_ON] ?: true
     }
 
     suspend fun saveMaxPoints(maxPoints: Int) {
@@ -113,6 +118,12 @@ class DataStoreHelper(private val context: Context) {
     suspend fun saveVibrar(vibrar: Boolean) {
         context.dataStore.edit { preferences ->
             preferences[VIBRAR] = vibrar
+        }
+    }
+
+    suspend fun saveKeepScreenOn(keepScreenOn: Boolean) {
+        context.dataStore.edit { preferences ->
+            preferences[KEEP_SCREEN_ON] = keepScreenOn
         }
     }
 }

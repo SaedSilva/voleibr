@@ -41,6 +41,7 @@ class MainViewModel(
                 dataStoreHelper.team2PointsFlow,
                 dataStoreHelper.vaiA2Flow,
                 dataStoreHelper.vibrarFlow,
+                dataStoreHelper.keepScreenOnFlow,
                 dataStoreHelper.team1ColorFlow,
                 dataStoreHelper.team2ColorFlow,
                 teamRepository.queue
@@ -55,10 +56,12 @@ class MainViewModel(
                 val vaiA2 = array[5] as Boolean
                 val vibrar = array[6] as Boolean
 
-                val team1Color = array[7] as Int
-                val team2Color = array[8] as Int
+                val keepScreenOn = array[7] as Boolean
 
-                val teamsInQueue = array[9] as List<TeamEntity>
+                val team1Color = array[8] as Int
+                val team2Color = array[9] as Int
+
+                val teamsInQueue = array[10] as List<TeamEntity>
 
                 MainScreenState(
                     maxPoints = maxPoints,
@@ -68,6 +71,7 @@ class MainViewModel(
                     team2Color = intToTeamColor(team2Color),
                     vaiA2 = vaiA2,
                     vibrar = vibrar,
+                    keepScreenOn = keepScreenOn,
                     teamsInQueue = teamsInQueue.map { team ->
                         Team(team.id, team.name)
                     }
@@ -82,6 +86,7 @@ class MainViewModel(
                         team2Color = newState.team2Color,
                         vaiA2 = newState.vaiA2,
                         vibrar = newState.vibrar,
+                        keepScreenOn = newState.keepScreenOn,
                         teamsInQueue = newState.teamsInQueue
                     )
                 }
@@ -170,6 +175,12 @@ class MainViewModel(
             is MainScreenEvent.SwitchVibrar -> {
                 viewModelScope.launch {
                     dataStoreHelper.saveVibrar(!_uiState.value.vibrar)
+                }
+            }
+
+            is MainScreenEvent.SwitchKeepScreenOn -> {
+                viewModelScope.launch {
+                    dataStoreHelper.saveKeepScreenOn(!_uiState.value.keepScreenOn)
                 }
             }
 

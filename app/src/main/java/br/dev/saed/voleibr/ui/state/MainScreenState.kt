@@ -50,6 +50,7 @@ data class MainScreenState(
     val teamsInQueue: List<Team> = ArrayDeque(),
     val vaiA2: Boolean = true,
     val vibrar: Boolean = true,
+    val keepScreenOn: Boolean = true,
     val teamToAdd: Team = Team(),
     val winner: Team? = null
 ) {
@@ -114,6 +115,7 @@ sealed class MainScreenEvent {
     data object ChangeTeam2Color : MainScreenEvent()
     data object SwitchVaiA2 : MainScreenEvent()
     data object SwitchVibrar : MainScreenEvent()
+    data object SwitchKeepScreenOn : MainScreenEvent()
     data object ClearQueue : MainScreenEvent()
     data object ClickedAddTeam : MainScreenEvent()
     data object ResetPoints : MainScreenEvent()
