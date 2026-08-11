@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 @Suppress("UNCHECKED_CAST")
 class MainViewModel(
@@ -236,7 +237,7 @@ class MainViewModel(
                     it.copy(winner = winner)
                 }
 
-                delay(2000)
+                delay(2000.milliseconds)
                 _uiState.update {
                     it.copy(winner = null)
                 }

@@ -7,15 +7,11 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import br.dev.saed.voleibr.ui.navigation.HomeRoute
-import br.dev.saed.voleibr.ui.navigation.configScreen
 import br.dev.saed.voleibr.ui.navigation.mainScreen
 import br.dev.saed.voleibr.ui.navigation.statsScreen
 import br.dev.saed.voleibr.ui.theme.VoleibrTheme
@@ -29,7 +25,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             VoleibrTheme {
-                    App(modifier = Modifier.fillMaxSize())
+                App(modifier = Modifier.fillMaxSize())
             }
         }
     }
@@ -49,41 +45,12 @@ private fun App(
     NavHost(
         navController = navController,
         startDestination = HomeRoute,
-        enterTransition = {
-            EnterTransition.None
-        },
-        exitTransition = {
-            ExitTransition.None
-        },
-        popEnterTransition = {
-            EnterTransition.None
-        },
-        popExitTransition = {
-            ExitTransition.None
-        }
+        enterTransition = { EnterTransition.None },
+        exitTransition = { ExitTransition.None },
+        popEnterTransition = { EnterTransition.None },
+        popExitTransition = { ExitTransition.None }
     ) {
         mainScreen(modifier, navController, mainViewModel)
-        configScreen(modifier, mainViewModel, navController)
         statsScreen(modifier, navController, statsViewModel)
-    }
-}
-
-
-
-
-@Preview
-@Composable
-private fun AppPreview() {
-    VoleibrTheme {
-        /*App(
-            context = LocalContext.current,
-            viewModel = MainViewModel(
-                DataStoreHelper(LocalContext.current),
-                TeamRepository(
-
-                )
-            ),
-            uiState = MainScreenState()
-        )*/
     }
 }

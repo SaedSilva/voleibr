@@ -7,7 +7,6 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import br.dev.saed.voleibr.ui.screens.StatsScreen
-import br.dev.saed.voleibr.ui.state.StatsScreenEvent
 import br.dev.saed.voleibr.ui.viewmodel.StatsViewModel
 import kotlinx.serialization.Serializable
 
@@ -27,8 +26,7 @@ fun NavGraphBuilder.statsScreen(
             onNavigateToHome = {
                 navController.popBackStack(HomeRoute, inclusive = false)
             },
-            deleteTeam = { statsViewModel.onEvent(StatsScreenEvent.DeleteTeam(it)) },
-            deleteAllTeams = { statsViewModel.onEvent(StatsScreenEvent.DeleteAll) }
+            onEvent = { statsViewModel.onEvent(it) }
         )
     }
 }

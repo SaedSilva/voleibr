@@ -29,39 +29,14 @@ fun NavGraphBuilder.mainScreen(
         MainScreen(
             modifier = modifier,
             uiState = mainScreenState,
-            onClickDecreaseMaxPoints = { mainViewModel.onEvent(MainScreenEvent.DecreaseMaxPoints) },
-            onClickIncreaseMaxPoints = { mainViewModel.onEvent(MainScreenEvent.IncreaseMaxPoints) },
-            onClickTeam1Scored = {
-                mainViewModel.onEvent(MainScreenEvent.Team1Scored)
-                if (mainViewModel.uiState.value.vibrar) {
-                    context.vibrator(1010)
+            onEvent = { event ->
+                mainViewModel.onEvent(event)
+                if (event is MainScreenEvent.Team1Scored || event is MainScreenEvent.Team2Scored) {
+                    if (mainViewModel.uiState.value.vibrar) {
+                        context.vibrator(1010)
+                    }
                 }
             },
-            onClickTeam1ScoreDecrease = { mainViewModel.onEvent(MainScreenEvent.Team1ScoreDecreased) },
-            onClickTeam2Scored = {
-                mainViewModel.onEvent(MainScreenEvent.Team2Scored)
-                if (mainViewModel.uiState.value.vibrar) {
-                    context.vibrator(1010)
-                }
-            },
-            onClickTeam2ScoreDecrease = { mainViewModel.onEvent(MainScreenEvent.Team2ScoreDecreased) },
-            onClickChangeTeams = { mainViewModel.onEvent(MainScreenEvent.ChangeTeams) },
-            onClickClearQueue = { mainViewModel.onEvent(MainScreenEvent.ClearQueue) },
-            onAddTeamNameChanged = {
-                mainViewModel.onEvent(
-                    MainScreenEvent.OnAddTeamNameChanged(
-                        it
-                    )
-                )
-            },
-            onClickAddTeam = { mainViewModel.onEvent(MainScreenEvent.ClickedAddTeam) },
-            onClickDeleteTeam = { mainViewModel.onEvent(MainScreenEvent.ClickedDeleteTeam(it)) },
-            onClickResetPoints = { mainViewModel.onEvent(MainScreenEvent.ResetPoints) },
-            onClickRemoveTeam1 = { mainViewModel.onEvent(MainScreenEvent.RemoveTeam1) },
-            onClickRemoveTeam2 = { mainViewModel.onEvent(MainScreenEvent.RemoveTeam2) },
-            onNavigateToConfig = { navController.navigate(ConfigRoute) },
-            onClickChangeTeam1Color = { mainViewModel.onEvent(MainScreenEvent.ChangeTeam1Color) },
-            onClickChangeTeam2Color = { mainViewModel.onEvent(MainScreenEvent.ChangeTeam2Color) },
             onNavigateToStats = { navController.navigate(StatsRoute) }
         )
     }

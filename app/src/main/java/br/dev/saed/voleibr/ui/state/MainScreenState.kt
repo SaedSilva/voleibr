@@ -2,61 +2,43 @@ package br.dev.saed.voleibr.ui.state
 
 import br.dev.saed.voleibr.model.entities.Team
 
-sealed class TeamColor(val color: Int) {
-    data object One: TeamColor(0xFFF8E287.toInt())
-    data object Two: TeamColor(0xFFEEE2BC.toInt())
-    data object Three: TeamColor(0xFFC5ECCE.toInt())
-    data object Four: TeamColor(0xFFB3E6D1.toInt())
-    data object Red: TeamColor(0xFFE57373.toInt())
-    data object Blue: TeamColor(0xFF64B5F6.toInt())
-    data object Gree: TeamColor(0xFF81C784.toInt())
-    data object Yellow: TeamColor(0xFFFFD54F.toInt())
-    data object Purple: TeamColor(0xFFBA68C8.toInt())
-    data object Cyan: TeamColor(0xFF4DD0E1.toInt())
-    data object Orange: TeamColor(0xFFFFB74D.toInt())
-    data object Pink: TeamColor(0xFFE57373.toInt())
-    data object Brown: TeamColor(0xFF8D6E63.toInt())
-    data object Grey: TeamColor(0xFFB0BEC5.toInt())
+enum class TeamColor(val color: Int) {
+    One(0xFFF8E287.toInt()),
+    Two(0xFFEEE2BC.toInt()),
+    Three(0xFFC5ECCE.toInt()),
+    Four(0xFFB3E6D1.toInt()),
+    Red(0xFFE57373.toInt()),
+    Blue(0xFF64B5F6.toInt()),
+    Green(0xFF81C784.toInt()),
+    Yellow(0xFFFFD54F.toInt()),
+    Purple(0xFFBA68C8.toInt()),
+    Cyan(0xFF4DD0E1.toInt()),
+    Orange(0xFFFFB74D.toInt()),
+    Pink(0xFFF06292.toInt()),
+    Brown(0xFF8D6E63.toInt()),
+    Grey(0xFFB0BEC5.toInt()),
+    Lime(0xFFC0CA33.toInt()),
+    Coral(0xFFFF7043.toInt()),
+    Indigo(0xFF5C6BC0.toInt()),
+    Teal(0xFF009688.toInt()),
+    Amber(0xFFFFB300.toInt()),
+    Sky(0xFF29B6F6.toInt()),
+    Emerald(0xFF43A047.toInt()),
+    Lavender(0xFFAB47BC.toInt()),
+    Mint(0xFF80CBC4.toInt()),
+    Navy(0xFF1565C0.toInt()),
+    Ruby(0xFFD32F2F.toInt()),
+    Olive(0xFF827717.toInt()),
+    Slate(0xFF607D8B.toInt()),
+    Peach(0xFFFFAB91.toInt());
 }
 
 fun intToTeamColor(color: Int): TeamColor {
-    return when (color) {
-        TeamColor.One.color -> TeamColor.One
-        TeamColor.Two.color -> TeamColor.Two
-        TeamColor.Three.color -> TeamColor.Three
-        TeamColor.Four.color -> TeamColor.Four
-        TeamColor.Red.color -> TeamColor.Red
-        TeamColor.Blue.color -> TeamColor.Blue
-        TeamColor.Gree.color -> TeamColor.Gree
-        TeamColor.Yellow.color -> TeamColor.Yellow
-        TeamColor.Purple.color -> TeamColor.Purple
-        TeamColor.Cyan.color -> TeamColor.Cyan
-        TeamColor.Orange.color -> TeamColor.Orange
-        TeamColor.Pink.color -> TeamColor.Pink
-        TeamColor.Brown.color -> TeamColor.Brown
-        TeamColor.Grey.color -> TeamColor.Grey
-        else -> TeamColor.One
-    }
+    return TeamColor.entries.find { it.color == color } ?: TeamColor.One
 }
 
 fun randomTeamColor(): TeamColor {
-    val colors = listOf(
-        TeamColor.One,
-        TeamColor.Two,
-        TeamColor.Three,
-        TeamColor.Four,
-        TeamColor.Red,
-        TeamColor.Blue,
-        TeamColor.Gree,
-        TeamColor.Yellow,
-        TeamColor.Purple,
-        TeamColor.Cyan,
-        TeamColor.Orange,
-        TeamColor.Pink,
-        TeamColor.Brown,
-        TeamColor.Grey
-    )
-    return colors.random()
+    return TeamColor.entries.random()
 }
 
 data class MainScreenState(
@@ -71,6 +53,16 @@ data class MainScreenState(
     val teamToAdd: Team = Team(),
     val winner: Team? = null
 ) {
+
+    val isVaiA2Triggered: Boolean
+        get() = vaiA2 && winner == null &&
+                team1.pontos >= maxPoints - 1 && team2.pontos >= maxPoints - 1
+
+    val team1MatchPoint: Boolean
+        get() = vaiA2 && team1.pontos >= maxPoints && team1.pontos == team2.pontos + 1
+
+    val team2MatchPoint: Boolean
+        get() = vaiA2 && team2.pontos >= maxPoints && team2.pontos == team1.pontos + 1
 
     fun testarGanhador(): Team? {
         if (!vaiA2) {
