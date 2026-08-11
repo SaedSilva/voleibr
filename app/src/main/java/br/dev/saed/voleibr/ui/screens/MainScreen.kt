@@ -327,8 +327,7 @@ private fun TeamScoreCard(
     Card(
         modifier = modifier
             .fillMaxHeight()
-            .fillMaxWidth()
-            .clickable { onScored() },
+            .fillMaxWidth(),
         colors = CardColors(
             containerColor = teamColor,
             contentColor = contentColor,
@@ -338,7 +337,7 @@ private fun TeamScoreCard(
         shape = MaterialTheme.shapes.medium
     ) {
         Box(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize().clickable { onScored() },
             contentAlignment = Alignment.Center
         ) {
             Column(
