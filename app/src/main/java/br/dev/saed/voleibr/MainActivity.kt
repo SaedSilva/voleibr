@@ -11,8 +11,6 @@ import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -24,7 +22,6 @@ import br.dev.saed.voleibr.ui.navigation.statsScreen
 import br.dev.saed.voleibr.ui.theme.VoleibrTheme
 import br.dev.saed.voleibr.ui.viewmodel.MainViewModel
 import br.dev.saed.voleibr.ui.viewmodel.StatsViewModel
-import kotlinx.coroutines.flow.map
 import org.koin.androidx.compose.koinViewModel
 
 class MainActivity : ComponentActivity() {
