@@ -26,7 +26,7 @@ val storageModule = module {
             androidContext(),
             TeamDatabase::class.java,
             "team_database"
-        ).fallbackToDestructiveMigration().build()
+        ).fallbackToDestructiveMigration(false).build()
     }
     single {
         get<TeamDatabase>().teamDAO()

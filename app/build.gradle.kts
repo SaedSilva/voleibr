@@ -1,21 +1,24 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.compose.compiler)
     id("androidx.room")
     id("com.google.devtools.ksp")
 
-    kotlin("plugin.serialization") version "2.0.10"
+    kotlin("plugin.serialization") version libs.versions.kotlin.get()
+}
+
+kotlin {
+    jvmToolchain(8)
 }
 
 android {
     namespace = "br.dev.saed.voleibr"
-    compileSdk = 34
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "br.dev.saed.voleibr"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 37
         versionCode = 3
         versionName = "1.2"
 
@@ -38,23 +41,18 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
     buildFeatures {
         compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
     }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
-    room {
-        schemaDirectory("$projectDir/schemas")
-    }
+}
+
+room {
+    schemaDirectory("$projectDir/schemas")
 }
 
 dependencies {
@@ -84,7 +82,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
 
     implementation(libs.androidx.material3)
-    runtimeOnly(libs.androidx.material.icons.extended)
+    implementation(libs.androidx.material.icons.extended)
     implementation(libs.androidx.ui.text.google.fonts)
 
 
