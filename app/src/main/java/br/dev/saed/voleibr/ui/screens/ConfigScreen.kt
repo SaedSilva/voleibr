@@ -1,7 +1,6 @@
 package br.dev.saed.voleibr.ui.screens
 
 import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,12 +8,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
@@ -34,6 +33,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.core.net.toUri
 import br.dev.saed.voleibr.R
 import br.dev.saed.voleibr.ui.state.MainScreenState
 import br.dev.saed.voleibr.ui.theme.VoleibrTheme
@@ -157,8 +157,8 @@ fun SobreDialog(
     val git = stringResource(id = R.string.url_github)
     val insta = stringResource(id = R.string.url_instagram)
     val context = LocalContext.current
-    val gintent = remember { Intent(Intent.ACTION_VIEW, Uri.parse(git)) }
-    val iintent = remember { Intent(Intent.ACTION_VIEW, Uri.parse(insta)) }
+    val gintent = remember { Intent(Intent.ACTION_VIEW, git.toUri()) }
+    val iintent = remember { Intent(Intent.ACTION_VIEW, insta.toUri()) }
 
     Dialog(onDismissRequest = onDismissDialog) {
         Card(modifier = modifier) {

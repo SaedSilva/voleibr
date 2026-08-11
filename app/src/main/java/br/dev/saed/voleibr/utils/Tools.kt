@@ -17,7 +17,7 @@ fun Context.vibrator(durationMillis: Long = 50) {
             vibrator.vibrate(vibrationEffect)
         }
 
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && Build.VERSION.SDK_INT < Build.VERSION_CODES.S -> {
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> {
             // For Android 8.0 (Oreo) to Android 11 (R)
             val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             val vibrationEffect = VibrationEffect.createOneShot(durationMillis, VibrationEffect.EFFECT_TICK)
