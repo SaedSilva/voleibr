@@ -90,14 +90,12 @@ data class MainScreenState(
             }
         } else {
             if (team1.pontos >= maxPoints && team1.pontos >= team2.pontos + 2) {
-                println("${team1.nome} ganhou!")
                 if (teamsInQueue.isEmpty()) {
                     team2.pontos = 0
                 }
                 team1.pontos = 0
                 return team1
             } else if (team2.pontos >= maxPoints && team2.pontos >= team1.pontos + 2) {
-                println("${team2.nome} ganhou!")
                 if (teamsInQueue.isEmpty()) {
                     team1.pontos = 0
                 }
