@@ -1,7 +1,6 @@
 package br.dev.saed.volei.ui.screens
 
 import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -20,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import br.dev.saed.volei.R
 import br.dev.saed.volei.ui.theme.VoleibrTheme
+import androidx.core.net.toUri
 
 @Composable
 fun SobreDialog(
@@ -29,8 +29,8 @@ fun SobreDialog(
     val git = stringResource(id = R.string.url_github)
     val insta = stringResource(id = R.string.url_instagram)
     val context = LocalContext.current
-    val gintent = remember { Intent(Intent.ACTION_VIEW, Uri.parse(git)) }
-    val iintent = remember { Intent(Intent.ACTION_VIEW, Uri.parse(insta)) }
+    val gintent = remember { Intent(Intent.ACTION_VIEW, git.toUri()) }
+    val iintent = remember { Intent(Intent.ACTION_VIEW, insta.toUri()) }
 
     Dialog(onDismissRequest = onDismissDialog) {
         Card(modifier = modifier) {
