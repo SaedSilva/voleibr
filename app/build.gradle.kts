@@ -12,11 +12,11 @@ kotlin {
 }
 
 android {
-    namespace = "br.dev.saed.voleibr"
+    namespace = "br.dev.saed.volei"
     compileSdk = 37
 
     defaultConfig {
-        applicationId = "br.dev.saed.voleibr"
+        applicationId = "br.dev.saed.volei"
         minSdk = 24
         targetSdk = 37
         versionCode = 3
@@ -38,8 +38,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
     buildFeatures {
         compose = true
