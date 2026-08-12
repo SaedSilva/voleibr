@@ -2,6 +2,7 @@ package br.dev.saed.volei.model.repositories.datastore
 
 import android.content.Context
 import androidx.datastore.core.DataStore
+import br.dev.saed.volei.R
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
@@ -32,7 +33,7 @@ class DataStoreHelper(private val context: Context) {
     }
 
     val team1Flow: Flow<String> = context.dataStore.data.map { preferences ->
-        preferences[TEAM_1] ?: "Time 1"
+        preferences[TEAM_1] ?: context.getString(R.string.txt_time_1)
     }
 
     val team1PointsFlow: Flow<Int> = context.dataStore.data.map { preferences ->
@@ -44,7 +45,7 @@ class DataStoreHelper(private val context: Context) {
     }
 
     val team2Flow: Flow<String> = context.dataStore.data.map { preferences ->
-        preferences[TEAM_2] ?: "Time 2"
+        preferences[TEAM_2] ?: context.getString(R.string.txt_time_2)
     }
 
     val team2PointsFlow: Flow<Int> = context.dataStore.data.map { preferences ->

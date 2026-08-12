@@ -25,7 +25,7 @@
     <string name="txt_github">GitHub</string>
     <string name="txt_instagram">Instagram</string>
     <string name="url_github">https://github.com/SaedSilva</string>
-    <string name="url_instagram">https://www.instagram.com/saed.dev</string>
+    <string name="url_instagram">https://www.instagram.com/_saedss_</string>
     <string name="txt_stats">Estatísticas</string>
     <string name="txt_team">Time</string>
     <string name="txt_wins">Vitórias</string>
@@ -36,5 +36,11 @@
     <string name="txt_delete_all_teams">Deletar todos os times</string>
     <string name="txt_all_teams">Todos os times!!!</string>
     <string name="txt_win">Ganhador:</string>
+    <string name="txt_acss_match_point">Match point</string>
+    <string name="txt_acss_change_color">Mudar cor</string>
+    <string name="txt_keep_screen_on">Manter tela ativa</string>
+    <string name="btn_sobre">Sobre</string>
+    <string name="txt_time_1">Time 1</string>
+    <string name="txt_time_2">Time 2</string>
 
 </resources>

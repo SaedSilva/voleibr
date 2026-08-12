@@ -242,7 +242,7 @@ private fun TopControlBar(
             ) {
                 if (isVaiA2Triggered) {
                     Text(
-                        text = "VAI A 2",
+                        text = stringResource(id = R.string.txt_vai_a_2).uppercase(),
                         fontSize = 18.sp,
                         fontFamily = OrbitronFamily,
                         color = Color(0xFFFFB300),
@@ -375,7 +375,7 @@ private fun TeamScoreCard(
                     ) {
                         Icon(
                             imageVector = Icons.Default.Bolt,
-                            contentDescription = "Match point",
+                            contentDescription = stringResource(id = R.string.txt_acss_match_point),
                             modifier = Modifier.size(20.dp),
                             tint = Color(0xFFFFB300)
                         )
@@ -440,7 +440,7 @@ private fun TeamScoreCard(
             ) {
                 Icon(
                     imageVector = Icons.Default.Palette,
-                    contentDescription = "Mudar cor",
+                    contentDescription = stringResource(id = R.string.txt_acss_change_color),
                     modifier = Modifier.size(18.dp),
                     tint = contentColor.copy(alpha = 0.6f)
                 )
@@ -589,7 +589,7 @@ private fun ConfigBottomSheet(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(text = "Manter tela ativa")
+                Text(text = stringResource(id = R.string.txt_keep_screen_on))
                 Switch(checked = uiState.keepScreenOn, onCheckedChange = null)
             }
 
@@ -598,7 +598,7 @@ private fun ConfigBottomSheet(
                 modifier = Modifier.fillMaxWidth(),
                 shape = MaterialTheme.shapes.small
             ) {
-                Text(text = "Sobre")
+                Text(text = stringResource(id = R.string.btn_sobre))
             }
 
             Spacer(modifier = Modifier.padding(bottom = 24.dp))
