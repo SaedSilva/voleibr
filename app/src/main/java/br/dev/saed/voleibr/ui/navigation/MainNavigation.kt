@@ -4,9 +4,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.composable
+import androidx.navigation3.runtime.EntryProviderScope
+import androidx.navigation3.runtime.NavKey
 import br.dev.saed.voleibr.ui.screens.MainScreen
 import br.dev.saed.voleibr.ui.state.MainScreenEvent
 import br.dev.saed.voleibr.ui.viewmodel.MainViewModel
@@ -15,14 +14,14 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-object HomeRoute
+data object HomeRoute : NavKey
 
-fun NavGraphBuilder.mainScreen(
+fun EntryProviderScope<NavKey>.mainScreen(
     modifier: Modifier,
-    navController: NavHostController,
+    navigator: Navigator,
     mainViewModel: MainViewModel
 ) {
-    composable<HomeRoute> {
+    entry<HomeRoute> {
         val mainScreenState by mainViewModel.uiState.collectAsState()
         val context = LocalContext.current
 
@@ -37,7 +36,7 @@ fun NavGraphBuilder.mainScreen(
                     }
                 }
             },
-            onNavigateToStats = { navController.navigate(StatsRoute) }
+            onNavigateToStats = { navigator.navigate(StatsRoute) }
         )
     }
 }

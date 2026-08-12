@@ -3,29 +3,26 @@ package br.dev.saed.voleibr.ui.navigation
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.composable
+import androidx.navigation3.runtime.EntryProviderScope
+import androidx.navigation3.runtime.NavKey
 import br.dev.saed.voleibr.ui.screens.StatsScreen
 import br.dev.saed.voleibr.ui.viewmodel.StatsViewModel
 import kotlinx.serialization.Serializable
 
 @Serializable
-object StatsRoute
+data object StatsRoute : NavKey
 
-fun NavGraphBuilder.statsScreen(
+fun EntryProviderScope<NavKey>.statsScreen(
     modifier: Modifier,
-    navController: NavHostController,
+    navigator: Navigator,
     statsViewModel: StatsViewModel
 ) {
-    composable<StatsRoute> {
+    entry<StatsRoute> {
         val statsScreenState by statsViewModel.uiState.collectAsState()
         StatsScreen(
             modifier = modifier,
             uiState = statsScreenState,
-            onNavigateToHome = {
-                navController.popBackStack(HomeRoute, inclusive = false)
-            },
+            onNavigateToHome = { navigator.goBack() },
             onEvent = { statsViewModel.onEvent(it) }
         )
     }

@@ -1,24 +1,23 @@
 package br.dev.saed.voleibr
 
-import android.app.Activity
 import android.os.Bundle
-import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.keepScreenOn
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.rememberNavController
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.ui.NavDisplay
 import br.dev.saed.voleibr.ui.navigation.HomeRoute
+import br.dev.saed.voleibr.ui.navigation.Navigator
 import br.dev.saed.voleibr.ui.navigation.mainScreen
+import br.dev.saed.voleibr.ui.navigation.rememberNavigationState
 import br.dev.saed.voleibr.ui.navigation.statsScreen
+import br.dev.saed.voleibr.ui.navigation.toEntries
 import br.dev.saed.voleibr.ui.theme.VoleibrTheme
 import br.dev.saed.voleibr.ui.viewmodel.MainViewModel
 import br.dev.saed.voleibr.ui.viewmodel.StatsViewModel
@@ -41,7 +40,11 @@ class MainActivity : ComponentActivity() {
 private fun App(
     modifier: Modifier = Modifier
 ) {
-    val navController = rememberNavController()
+    val navigationState = rememberNavigationState(
+        startRoute = HomeRoute,
+        topLevelRoutes = setOf(HomeRoute)
+    )
+    val navigator = remember { Navigator(navigationState) }
 
     val mainViewModel = koinViewModel<MainViewModel>()
 
@@ -49,27 +52,14 @@ private fun App(
 
     val keepScreenOn = mainViewModel.uiState.collectAsStateWithLifecycle().value.keepScreenOn
 
-    val context = LocalContext.current
-
-    LaunchedEffect(keepScreenOn) {
-        if (context is Activity) {
-            if (keepScreenOn) {
-                context.window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-            } else {
-                context.window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-            }
-        }
+    val entryProvider = entryProvider {
+        mainScreen(modifier, navigator, mainViewModel)
+        statsScreen(modifier, navigator, statsViewModel)
     }
 
-    NavHost(
-        navController = navController,
-        startDestination = HomeRoute,
-        enterTransition = { EnterTransition.None },
-        exitTransition = { ExitTransition.None },
-        popEnterTransition = { EnterTransition.None },
-        popExitTransition = { ExitTransition.None }
-    ) {
-        mainScreen(modifier, navController, mainViewModel)
-        statsScreen(modifier, navController, statsViewModel)
-    }
+    NavDisplay(
+        modifier = if (keepScreenOn) Modifier.keepScreenOn() else Modifier,
+        entries = navigationState.toEntries(entryProvider),
+        onBack = { navigator.goBack() }
+    )
 }
