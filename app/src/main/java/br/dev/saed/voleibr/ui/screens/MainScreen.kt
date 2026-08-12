@@ -324,6 +324,16 @@ private fun TeamScoreCard(
         scoreScale.animateTo(1f, tween(150))
     }
 
+    val infiniteTransition = rememberInfiniteTransition()
+    val matchPointPulse by infiniteTransition.animateFloat(
+        initialValue = 1f,
+        targetValue = 1.12f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(600),
+            repeatMode = RepeatMode.Reverse
+        )
+    )
+
     Card(
         modifier = modifier
             .fillMaxHeight()
@@ -354,7 +364,9 @@ private fun TeamScoreCard(
                     fontSize = scoreFontSize,
                     fontFamily = OrbitronFamily,
                     color = if (isMatchPoint) Color(0xFFFFB300) else contentColor,
-                    modifier = Modifier.scale(scoreScale.value)
+                    modifier = Modifier.scale(
+                        scoreScale.value * if (isMatchPoint) matchPointPulse else 1f
+                    )
                 )
                 if (isMatchPoint) {
                     Row(

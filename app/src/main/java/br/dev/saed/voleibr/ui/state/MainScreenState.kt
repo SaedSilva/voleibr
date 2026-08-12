@@ -60,10 +60,18 @@ data class MainScreenState(
                 team1.pontos >= maxPoints - 1 && team2.pontos >= maxPoints - 1
 
     val team1MatchPoint: Boolean
-        get() = vaiA2 && team1.pontos >= maxPoints && team1.pontos == team2.pontos + 1
+        get() = if (vaiA2) {
+            team1.pontos >= maxPoints - 1 && team1.pontos >= team2.pontos + 1
+        } else {
+            team1.pontos >= maxPoints - 1
+        }
 
     val team2MatchPoint: Boolean
-        get() = vaiA2 && team2.pontos >= maxPoints && team2.pontos == team1.pontos + 1
+        get() = if (vaiA2) {
+            team2.pontos >= maxPoints - 1 && team2.pontos >= team1.pontos + 1
+        } else {
+            team2.pontos >= maxPoints - 1
+        }
 
     fun testarGanhador(): Team? {
         if (!vaiA2) {
